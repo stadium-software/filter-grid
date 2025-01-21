@@ -1,6 +1,6 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-This module provides for four functions:
+A module filters a JSON dataset on the client-side. Use with smaller datasets. This module enables for four functions:
 
 1. Generating filters grids
 2. Applying sets of filters to datasets
