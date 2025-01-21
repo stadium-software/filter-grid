@@ -842,7 +842,7 @@ Fields Definition Example
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
 
-Example Output
+ApplyFilters Example Output
 ```json
 {
    "data": [
@@ -861,6 +861,8 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
 
+![Apply Button Event Handler](images/ApplyEventHandler.png)
+
 ### Clear Filters Button Click
 1. Drag the "ClearFilters" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
@@ -870,11 +872,28 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: The List containing the full dataset
 
+![Clear Button Event Handler](images/ClearEventHandler.png)
+
 ## Saved Filters
 
 ### Saving Filters
-1. The "ApplyFilters" global script returns an object containing a List of applied filters (~.ApplyFilters.Data.filters)
+1. The "ApplyFilters" global script returns an object containing a List of applied filters (*~.ApplyFilters.Data.filters*)
 2. Store this list temporarily in a hidden label on the page or in a session variable, or more permanently in a cookie or database
+
+ApplyFilters Example Output
+```json
+{
+   "data": [
+         {"ID":3,"FirstName":"Wayne","LastName":"Andrews","NoOfChildren":5,"NoOfPets":6,"StartDate":"2022-12-18T00:00:00","EndDate":"2024-03-25T08:00:00","Healthy":true,"Happy":true,"Subscription":"Subscribed"}
+   ],
+   "filters":[
+      {"column":"ID","selectedoperator":"From-To","selectedvalues":["1","20"]},
+      {"column":"Healthy","selectedvalues":["true"]},
+      {"column":"Happy","selectedvalues":["Yes"]},
+      {"column":"Subscription","selectedvalues":["Subscribed"]}
+   ]
+}
+```
 
 ### Applying Saved Filters
 1. Drag the "SetFilters" global script to an event handler or script and provide parameter values
@@ -885,7 +904,7 @@ Example Output
    2. Data: A *List* containing the *full* dataset
 3. Drag a *SetValue* to the event handler or script
    1. Target: The DataGrid.Data or the Repeater.List property
-   2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
+   2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (*~.ApplyFilters.Data.data*)
 
 ## Display Options
 
