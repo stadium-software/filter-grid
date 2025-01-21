@@ -11,7 +11,7 @@ Filtered datasets returned in this module can be applied to DataGrids and [Clien
 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) it is advisable to set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
-Video / screenshot
+https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 
 ## Contents <!-- omit in toc -->
 - [Version](#version)
