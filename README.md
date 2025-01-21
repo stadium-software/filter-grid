@@ -29,9 +29,11 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
     - [Page.Load](#pageload)
     - [Apply Button Click](#apply-button-click)
     - [Clear Filters Button](#clear-filters-button)
-  - [Saving Filters](#saving-filters)
-  - [Applying Saved Filters](#applying-saved-filters)
-  - [Collapsible Filters](#collapsible-filters)
+  - [Saved Filters](#saved-filters)
+    - [Saving Filters](#saving-filters)
+    - [Applying Saved Filters](#applying-saved-filters)
+  - [Display Options](#display-options)
+    - [Collapsible](#collapsible)
   - [CSS](#css)
     - [Customising CSS](#customising-css)
 - [Upgrading](#upgrading)
@@ -863,11 +865,13 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: The List containing the full dataset
 
-## Saving Filters
+## Saved Filters
+
+### Saving Filters
 1. The "ApplyFilters" global script returns an object containing a List of applied filters (~.ApplyFilters.Data.filters)
 2. Store this list temporarily in a hidden label on the page or in a session variable, or more permanently in a cookie or database
 
-## Applying Saved Filters
+### Applying Saved Filters
 1. Drag the "SetFilters" global script to an event handler or script and provide parameter values
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. SelectedFilters: Provide a List containing saved filters ([see saved filters](#saving-filters))
@@ -878,7 +882,9 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
 
-## Collapsible Filters
+## Display Options
+
+### Collapsible
 Use the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module to display the filtergrid and filter buttons in a collapisble container control. 
 
 ## CSS
