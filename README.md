@@ -1,8 +1,13 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-Scripts to generate a filters grid, apply filters to a dataset and reset a generated filtergrid. Filtered datasets can be applied to DataGrids and [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side). 
+Scripts to 
 
-Use this script instead of the similar, but now deprecated [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
+1. Generate a filters grid
+2. Fetch and apply filters to a dataset
+3. Reset / clear a generated filtergrid
+4. Populate a filtergrid from a set of saved filters
+
+Filtered datasets returned in this module can be applied to DataGrids and [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script instead of the similar, but now deprecated [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) it is advisable to set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
