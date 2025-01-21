@@ -651,12 +651,12 @@ function setSelectedFilters(){
             }
         }
         if (type == "boolean") {
-            if (display == "radio") {
+            if (display == "dropdown") {
+                if (selectedvalues && selectedvalues.length > 0 && [...select.options].map(el => el.value).includes(selectedvalues[0].toString())) select.value = selectedvalues[0];
+            } else {
                 for (let s = 0; s < radioinputs.length; s++) {
                     if (selectedvalues && selectedvalues.length > 0 && selectedvalues[0] == radioinputs[s].value) radioinputs[s].checked = true;
                 }
-            } else {
-                if (selectedvalues && selectedvalues.length > 0 && [...select.options].map(el => el.value).includes(selectedvalues[0].toString())) select.value = selectedvalues[0];
             }
         }
         if (type == "enum") {
