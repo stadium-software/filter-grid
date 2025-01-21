@@ -745,6 +745,8 @@ function clearForm() {
 6. Add a *Label* control to the page
    1. Set the Label *Visible* property to "false"
 
+![Page Controls](images/PageControls.png)
+
 ## Event Handlers
 
 ### Page.Load
