@@ -906,10 +906,14 @@ ApplyFilters Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (*~.ApplyFilters.Data.data*)
 
+![Apply Saved Filters](images/ApplySaved.png)
+
 ## Display Options
 
 ### Collapsible
 Use the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module to display the filtergrid and filter buttons in a collapisble container control. 
+
+![Collapsible Controls](images/CollapsibleControls.png)
 
 ## CSS
 The CSS below is required for the correct functioning of the module. Some elements can be [customised](#customising-css) using a variables CSS file. 
