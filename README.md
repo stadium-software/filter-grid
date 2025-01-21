@@ -750,6 +750,8 @@ function clearForm() {
 ## Event Handlers
 
 ### Page.Load
+Generating the filtergrid, populating a DataGrid or Repeater with data and storing the full dataset in a label for use later. 
+
 1. Execute your connector to fetch the data
 2. Drag a *SetValue* action to the event handler
    1. Target: The *Label.Text* property
@@ -833,6 +835,8 @@ Fields Definition Example
    3. SelectedFilters: Optionally provide a List of saved filters ([see saved filters](#saving-filters))
 
 ### Apply Button Click
+Applying filters to the full dataset and populating a DataGrid or Repeater with a reduced dataset
+
 1. Drag a *List* into the event handler
 2. Assign the *Label.Text* property to the List *Value* property
 3. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
@@ -864,6 +868,8 @@ ApplyFilters Example Output
 ![Apply Button Event Handler](images/ApplyEventHandler.png)
 
 ### Clear Filters Button Click
+Clearing all user-set values from a filtergrid
+
 1. Drag the "ClearFilters" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
 2. Drag a *List* into the event handler
@@ -875,6 +881,7 @@ ApplyFilters Example Output
 ![Clear Button Event Handler](images/ClearEventHandler.png)
 
 ## Saved Filters
+Saving user-defined filter criteria and applying it to a filtergrid at a later time
 
 ### Saving Filters
 1. The "ApplyFilters" global script returns an object containing a List of applied filters (*~.ApplyFilters.Data.filters*)
@@ -909,6 +916,7 @@ ApplyFilters Example Output
 ![Apply Saved Filters](images/ApplySaved.png)
 
 ## Display Options
+Allowing users to collaps and expand filtergrids
 
 ### Collapsible
 Use the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module to display the filtergrid and filter buttons in a collapisble container control. 
