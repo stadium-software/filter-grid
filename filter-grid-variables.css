@@ -1,0 +1,14 @@
+/* Stadium CSS */
+:root {
+    --repeater-filter-background-color: #f1f1f1;
+    
+    --repeater-integrated-filter-header-background-color: white;
+    --repeater-integrated-filter-border-color: transparent;
+
+    --repeater-filter-clear-button-font-color: #3399ff;
+    --repeater-filter-clear-button-background-color: white;
+    --repeater-filter-clear-button-hover-font-color: #3399ff;
+    --repeater-filter-clear-button-hover-background-color: white;
+
+    --repeater-filter-clear-button-position: 0; /*Set this to 1 to reverse the button order*/
+}

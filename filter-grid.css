@@ -1,0 +1,192 @@
+/* Stadium CSS */
+.stadium-filter-container {
+    margin-top: 10px;
+
+    .visually-hidden {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+        outline: 0;
+        border: 0;
+        position: absolute;
+        padding: 0;
+    }
+
+    .stadium-filters {
+        border: 1px solid var(--repeater-integrated-filter-border-color, var(--GENERAL-BORDER-COLOR));
+        background-color: var(--repeater-filter-background-color, var(--BODY-BACKGROUND-COLOR));
+        display: grid;
+        grid-template-columns: minmax(min-content, max-content) max-content minmax(120px, 1fr);
+        align-items: center;
+        padding: 0 6px;
+    }
+
+    .stadium-filters div[fvalue]:last-child {
+        margin-bottom: 12px;
+    }
+
+    .stadium-filter-inner-container {
+        overflow: hidden;
+    }
+
+    .lite-button,
+    .lite-button:hover, 
+    .lite-button:focus {
+        background-color: var(--repeater-filter-clear-button-background-color, var(--BUTTON-TEXT-COLOR));
+        color: var(--repeater-filter-clear-button-font-color, var(--BUTTON-BACKGROUND-COLOR));
+        box-shadow: none;
+    }
+
+    input:not([type='checkbox'], [type='radio']) {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    select {
+        min-width: 135px;
+        width: 100%;
+    }
+
+    select[readonly='readonly'] {
+        user-select: none;
+        pointer-events: none;
+        background-color: var(--FORM-CONTROL-BACKGROUND-COLOR, #f9f9f9);
+        background-image: none;
+    }
+
+    .control-container:has(.filtergrid-text-value),
+    .filtergrid-text-value {
+        padding-right: 0;
+    }
+
+    .number-values {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+
+        &>.form-control {
+            width: calc(50% - 5px);
+            max-width: 145px;
+        }
+    }
+
+    .date-values {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+
+        &>.form-control {
+            width: calc(50% - 5px);
+            max-width: 145px;
+        }
+    }
+
+    .filtergrid-checkbox-list,
+    .filtergrid-radiobutton-list {
+        padding: 6px;
+    }
+
+    .label-container {
+       overflow-wrap: break-word;
+    }
+
+    .label-container:has(+ .filtergrid-checkbox-list) {
+        align-self: self-start;
+    }
+
+    .filter-button-bar {
+        grid-column: 1 / 3;
+        padding-bottom: 6px;
+        display: flex;
+        > .button-container:nth-child(1) {
+            order: var(--repeater-filter-clear-button-position, 1);
+        }
+    }
+    .filtergrid-from-date:has(+ .visually-hidden),
+    .filtergrid-from-number:has(+ .visually-hidden) {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+.filter-collapsed {
+    .stadium-filter-header {
+        user-select: none;
+        background-image: url('data: image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMTYgMTYiPjxwYXRoIGZpbGw9IiM4ODg4ODgiIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTExLjUgMmExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3pNOS4wNSAzYTIuNSAyLjUgMCAwIDEgNC45IDBIMTZ2MWgtMi4wNWEyLjUgMi41IDAgMCAxLTQuOSAwSDBWM2g5LjA1ek00LjUgN2ExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3pNMi4wNSA4YTIuNSAyLjUgMCAwIDEgNC45IDBIMTZ2MUg2Ljk1YTIuNSAyLjUgMCAwIDEtNC45IDBIMFY4aDIuMDV6bTkuNDUgNGExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3ptLTIuNDUgMWEyLjUgMi41IDAgMCAxIDQuOSAwSDE2djFoLTIuMDVhMi41IDIuNSAwIDAgMS00LjkgMEgwdi0xaDkuMDV6Ii8+PC9zdmc+');
+        background-repeat: no-repeat;
+        background-size: 20px;
+        background-color: var(--repeater-integrated-filter-header-background-color, var(--BODY-BACKGROUND-COLOR));
+        background-position: right 8px center;
+        cursor: pointer;
+        font-weight: bold;
+        line-height: 2;
+        padding: 6px;
+    }
+
+    .stadium-filters {
+        overflow: hidden;
+        transition: border-color 500ms;
+        border-color: white;
+    }
+
+    .stadium-filter-inner-container {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 500ms;
+    }
+}
+
+.filter-integrated {
+    position: relative;
+    background-color: transparent;
+    margin-top: 0;
+
+    .stadium-filter-header {
+        user-select: none;
+        background-image: url('data: image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMTYgMTYiPjxwYXRoIGZpbGw9IiM4ODg4ODgiIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTExLjUgMmExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3pNOS4wNSAzYTIuNSAyLjUgMCAwIDEgNC45IDBIMTZ2MWgtMi4wNWEyLjUgMi41IDAgMCAxLTQuOSAwSDBWM2g5LjA1ek00LjUgN2ExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3pNMi4wNSA4YTIuNSAyLjUgMCAwIDEgNC45IDBIMTZ2MUg2Ljk1YTIuNSAyLjUgMCAwIDEtNC45IDBIMFY4aDIuMDV6bTkuNDUgNGExLjUgMS41IDAgMSAwIDAgM2ExLjUgMS41IDAgMCAwIDAtM3ptLTIuNDUgMWEyLjUgMi41IDAgMCAxIDQuOSAwSDE2djFoLTIuMDVhMi41IDIuNSAwIDAgMS00LjkgMEgwdi0xaDkuMDV6Ii8+PC9zdmc+');
+        background-repeat: no-repeat;
+        background-size: 20px;
+        background-color: var(--repeater-integrated-filter-header-background-color, var(--BODY-BACKGROUND-COLOR));
+        background-position: center;
+        cursor: pointer;
+        font-weight: bold;
+        line-height: 2;
+        width: 38px;
+        height: 38px;
+    }
+
+    .stadium-filter-inner-container {
+        position: absolute;
+        top: calc(100% - 2px);
+        z-index: 10;
+        display: grid;
+        grid-template-rows: 0fr;
+        grid-template-columns: max-content;
+        transition: grid-template-rows 500ms;
+    }
+
+    .stadium-filters {
+        overflow: hidden;
+        transition: border-color 500ms;
+        border-color: white;
+        border-bottom-right-radius: 6px;
+        border-bottom-left-radius: 6px;
+    }
+}
+.expand.filter-integrated {
+    position: relative;
+    .stadium-filter-inner-container {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    }
+}
+.expand.filter-integrated,
+.expand.filter-collapsed {
+    .stadium-filter-inner-container {
+        grid-template-rows: 1fr;
+        grid-template-columns: max-content;
+    }
+    .stadium-filters {
+        padding: 12px;
+        border-color: var(--repeater-integrated-filter-border-color, var(--GENERAL-BORDER-COLOR));
+    }
+}
