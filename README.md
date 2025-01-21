@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [Collapsible Filters](#collapsible-filters)
   - [CSS](#css)
     - [Customising CSS](#customising-css)
-  - [CSS Upgrading](#css-upgrading)
+- [Upgrading](#upgrading)
 - [Working with Stadium Repos](#working-with-stadium-repos)
 
 # Version
@@ -894,8 +894,8 @@ The CSS below is required for the correct functioning of the module. Some elemen
 2. Adjust the variables in the *:root* element as you see fit
 3. Overwrite the file in the CSS folder of your application with the customised file
 
-## CSS Upgrading
-To upgrade the CSS in this module, follow the [steps outlined in this repo](https://github.com/stadium-software/samples-upgrading)
+# Upgrading
+To upgrade this module, follow the [steps outlined in this repo](https://github.com/stadium-software/samples-upgrading)
 
 # Working with Stadium Repos
 Stadium Repos are not static. They change as additional features are added and bugs are fixed. Using the right method to work with Stadium Repos allows for upgrading them in a controlled manner. How to use and update application repos is described here 
