@@ -16,7 +16,7 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 ## Contents <!-- omit in toc -->
 - [Version](#version)
 - [Setup](#setup)
-  - [Application Setup](#application-setup)
+  - [Application](#application)
   - [Global Scripts](#global-scripts)
     - [GenerateFilters Script](#generatefilters-script)
     - [ApplyFilters Script](#applyfilters-script)
@@ -25,11 +25,11 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [Types](#types)
     - [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
     - [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
-  - [Page Setup](#page-setup)
+  - [Page](#page)
   - [Event Handlers](#event-handlers)
     - [Page.Load](#pageload)
     - [Apply Button Click](#apply-button-click)
-    - [Clear Filters Button](#clear-filters-button)
+    - [Clear Filters Button Click](#clear-filters-button-click)
   - [Saved Filters](#saved-filters)
     - [Saving Filters](#saving-filters)
     - [Applying Saved Filters](#applying-saved-filters)
@@ -45,7 +45,7 @@ Initial 1.0
 
 # Setup
 
-## Application Setup
+## Application 
 1. Check the *Enable Style Sheet* checkbox in the application properties
 
 ## Global Scripts
@@ -732,7 +732,7 @@ function clearForm() {
 
 ![Applied Filters Type](images/AppliedFiltersType.png)
 
-## Page Setup
+## Page
 1. Drag a *Container* control to the page 
 2. Assign a class of your choosing to the control (e.g. filter-container)
 3. Drag a *Button* control to the page 
@@ -859,7 +859,7 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
 
-### Clear Filters Button
+### Clear Filters Button Click
 1. Drag the "ClearFilters" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
 2. Drag a *List* into the event handler
