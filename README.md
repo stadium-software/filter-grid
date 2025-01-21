@@ -22,8 +22,9 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
     - [ApplyFilters Script](#applyfilters-script)
     - [ClearFilters Script](#clearfilters-script)
     - [SetFilters Script](#setfilters-script)
-  - [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
-  - [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
+  - [Types](#types)
+    - [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
+    - [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
   - [Page Setup](#page-setup)
   - [Event Handlers](#event-handlers)
     - [Page.Load](#pageload)
@@ -704,7 +705,9 @@ function clearForm() {
 }
 ```
 
-## FilterConfig Type Setup (Required)
+## Types
+
+### FilterConfig Type Setup (Required)
 1. Add a type called "FilterConfig" to the types collection in the Stadium Application Explorer
 2. Add the following properties to the type
    1. type (Any)
@@ -719,7 +722,7 @@ function clearForm() {
 
 ![Filters ConfigType Setup](images/TypeSetup.png)
 
-## SelectedFilters Type Setup (Optional)
+### SelectedFilters Type Setup (Optional)
 1. If you wish to apply filters programatically, it may be useful to create a second type called "SelectedFilters"
 2. Add the following properties to the type
    1. column (Any)
