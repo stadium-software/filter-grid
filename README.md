@@ -1,6 +1,6 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-This module comes with four scripts:
+This module provides for four functions:
 
 1. Generating filters grids
 2. Fetching and applying filters to datasets
