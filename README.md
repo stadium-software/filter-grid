@@ -25,9 +25,10 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
   - [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
   - [Page Setup](#page-setup)
-  - [Page.Load Event Handler](#pageload-event-handler)
-  - [Apply Button Click Event Handler](#apply-button-click-event-handler)
-  - [Clear Filters Button Event Handler](#clear-filters-button-event-handler)
+  - [Event Handlers](#event-handlers)
+    - [Page.Load](#pageload)
+    - [Apply Button Click](#apply-button-click)
+    - [Clear Filters Button](#clear-filters-button)
   - [Saving Filters](#saving-filters)
   - [Applying Saved Filters](#applying-saved-filters)
   - [Collapsible Filters](#collapsible-filters)
@@ -739,7 +740,9 @@ function clearForm() {
 6. Add a *Label* control to the page
    1. Set the Label *Visible* property to "false"
 
-## Page.Load Event Handler
+## Event Handlers
+
+### Page.Load
 1. Execute your connector to fetch the data
 2. Drag a *SetValue* action to the event handler
    1. Target: The *Label.Text* property
@@ -822,7 +825,7 @@ Fields Definition Example
    2. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    3. SelectedFilters: Optionally provide a List of saved filters ([see saved filters](#saving-filters))
 
-## Apply Button Click Event Handler
+### Apply Button Click
 1. Drag a *List* into the event handler
 2. Assign the *Label.Text* property to the List *Value* property
 3. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
@@ -851,7 +854,7 @@ Example Output
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
 
-## Clear Filters Button Event Handler
+### Clear Filters Button
 1. Drag the "ClearFilters" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
 2. Drag a *List* into the event handler
