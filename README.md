@@ -3,8 +3,8 @@
 This module provides for four functions:
 
 1. Generating filters grids
-2. Fetching and applying filters to datasets
-3. Resetting / clearing generated filtergrids
+2. Applying sets of filters to datasets
+3. Resetting / clearing filtergrids
 4. Populating filtergrids from sets of saved filters
 
 This module can be used in conjunction with DataGrids and [Client-Side Repeater DataGrids](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script instead of the similar [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
@@ -47,10 +47,10 @@ Initial 1.0
 ## Global Scripts
 This module requires the creation of four separate scripts. Each of these can be called separately, providing for flexibility in implementation. 
 
-1. [GenerateFilters](#generatefilter-script): Generates the filtergrid from the configuration
-2. [ApplyFilters](#applyfilter-script): Parses the filtergrid and applies the filters to a dataset
-3. [ClearFilters](#clearfilter-script): Resets the filtergrid
-4. [SetFilters](#setfilter-script): Populates a filtergrid with filter values from a set of saved filters
+1. [GenerateFilters](#generatefilters-script): Generates the filtergrid from the configuration
+2. [ApplyFilters](#applyfilters-script): Parses the filtergrid and applies the filters to a dataset
+3. [ClearFilters](#clearfilters-script): Resets the filtergrid
+4. [SetFilters](#setfilters-script): Populates a filtergrid with filter values from a set of saved filters
 
 ### GenerateFilters Script
 1. Create a Global Script called "GenerateFilters"
