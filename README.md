@@ -1,13 +1,13 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-A module to generate a grid of filters and filter a JSON dataset client-side. Use with smaller datasets. This module enables for four functions:
+A module to generate sets of filters. This module enables for four functions:
 
 1. Generating filters grids
-2. Applying sets of filters to datasets
+2. Applying sets of filters to JSON arrays
 3. Resetting / clearing filtergrids
 4. Populating filtergrids from sets of saved filters
 
-This module can be used in conjunction with DataGrids and [Client-Side Repeater DataGrids](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script instead of the similar [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
+This module can be used in conjunction with DataGrids and [Client-Side Repeater DataGrids](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script with smaller datasets instead of the similar [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
