@@ -1,6 +1,6 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-A module to generate sets of filters. This module enables for four functions:
+A module to generate sets of filters and to filter JSON arrays. This module enables for four separate functions:
 
 1. Generating filters grids
 2. Applying sets of filters to JSON arrays
