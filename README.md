@@ -837,8 +837,11 @@ Fields Definition Example
 ### Apply Button Click
 Applying filters to the full dataset and populating a DataGrid or Repeater with a reduced dataset
 
-1. Drag a *List* into the event handler
+1. Drag a *List* of type "Any" into the event handler
 2. Assign the *Label.Text* property to the List *Value* property
+
+![](images/FilterApplyListInput.png)
+
 3. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: The *List* containing the data
