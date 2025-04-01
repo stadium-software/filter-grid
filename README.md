@@ -36,12 +36,15 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [Display Options](#display-options)
     - [Collapsible](#collapsible)
   - [CSS](#css)
+    - [Before v6.12](#before-v612)
+    - [v6.12+](#v612)
     - [Customising CSS](#customising-css)
-- [Upgrading](#upgrading)
-- [Working with Stadium Repos](#working-with-stadium-repos)
+  - [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
 Initial 1.0
+
+1.0.1 Changed px to rem; upgraded readme to 6.12+
 
 # Setup
 
@@ -927,8 +930,9 @@ Use the [Collapse Controls](https://github.com/stadium-software/collapse-control
 ![Collapsible Controls](images/CollapsibleControls.png)
 
 ## CSS
-The CSS below is required for the correct functioning of the module. Some elements can be [customised](#customising-css) using a variables CSS file. 
+The CSS below is required for the correct functioning of the module. Variables exposed in the [*filter-grid-variables.css*](filter-grid-variables.css) file can be [customised](#customising-css).
 
+### Before v6.12
 1. Create a folder called "CSS" inside of your Embedded Files in your application
 2. Drag the two CSS files from this repo [*filter-grid-variables.css*](filter-grid-variables.css) and [*filter-grid.css*](filter-grid.css) into that folder
 3. Paste the link tags below into the *head* property of your application
@@ -937,15 +941,28 @@ The CSS below is required for the correct functioning of the module. Some elemen
 <link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
 ``` 
 
+### v6.12+
+1. Create a folder called "CSS" inside of your Embedded Files in your application
+2. Drag the CSS files from this repo [*filter-grid.css*](filter-grid.css) into that folder
+3. Paste the link tag below into the *head* property of your application
+```html
+<link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid.css">
+``` 
+
 ### Customising CSS
 1. Open the CSS file called [*filter-grid-variables.css*](filter-grid-variables.css) from this repo
 2. Adjust the variables in the *:root* element as you see fit
-3. Overwrite the file in the CSS folder of your application with the customised file
+3. Stadium 6.12+ users can comment out any variable they do **not** want to customise
+4. Add the [*filter-grid-variables.css*](filter-grid-variables.css) to the "CSS" folder in the EmbeddedFiles (overwrite)
+5. Paste the link tag below into the *head* property of your application (if you don't already have it there)
+```html
+<link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
+``` 
+6. Add the file to the "CSS" inside of your Embedded Files in your application
 
-# Upgrading
-To upgrade this module, follow the [steps outlined in this repo](https://github.com/stadium-software/samples-upgrading)
+**NOTE: Do not change any of the CSS in the 'filter-grid.css' file**
 
-# Working with Stadium Repos
-Stadium Repos are not static. They change as additional features are added and bugs are fixed. Using the right method to work with Stadium Repos allows for upgrading them in a controlled manner. How to use and update application repos is described here 
+## Upgrading Stadium Repos
+Stadium Repos are not static. They change as additional features are added and bugs are fixed. Using the right method to work with Stadium Repos allows for upgrading them in a controlled manner. 
 
-[Working with Stadium Repos](https://github.com/stadium-software/samples-upgrading)
+How to use and update application repos is described here: [Working with Stadium Repos](https://github.com/stadium-software/samples-upgrading)
