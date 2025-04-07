@@ -775,9 +775,9 @@ Generating the filtergrid, populating a DataGrid or Repeater with data and stori
    4. *display*
       1. For *boolean* types: Shown as radiobuttonlists by default, but passing the value "dropdown" in this property will cause them to be shown as a dropdown instead
       2. For *enum* types: These are shown as dropdowns by default, but passing the value "radio" in this property will cause them to be shown as a radio button list instead
-      3. For *date* type (optional; default is false): Add "picker" to display a browser-provided HTML Date Picker in the date input fields
+      3. For *date* type (optional; default is false): Add "picker" to display a browser-provided [HTML5 Date Picker](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date) in the date input fields. 
    5. *data*: filters of type *enum* and *multiselect* require a list of data users can select from
-   6. *format* (*date* type only; default 'YYYY/MM/DD'): The format in which date filter values are passed to the DataGrid search box. The module uses [DayJS Formats](https://day.js.org/docs/en/display/format)
+   6. *format* (*date* type only; default 'YYYY/MM/DD'): The format in which date filter values are passed to the DataGrid search box. This format must match the format used in the DataGrid date column. The format must also be understood as a date by Lucene or Lucene will treat it as a string search. The module uses [DayJS Formats](https://day.js.org/docs/en/display/format).
    7. *operators* (list; optional; only for types 'text', 'date' and 'number'): A list of operators to show in the operators dropdown. Use when you want to show only a subset of the options below. Allowed operators
       1. text: "Contains", "Does Not Contain", "Equals", "Does Not Equal"
       2. number: "Between", "From-To", "Equals", "Greater than", "Smaller than"
