@@ -42,9 +42,11 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-Initial 1.0
+1.0.2
 
 1.0.1 Changed px to rem; upgraded readme to 6.12+
+
+1.0.2 Fixed alignment issue for last input field in grid (css only)
 
 # Setup
 

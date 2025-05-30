@@ -18,11 +18,7 @@
         display: grid;
         grid-template-columns: minmax(min-content, max-content) max-content minmax(12rem, 1fr);
         align-items: center;
-        padding: 0 0.6rem;
-    }
-
-    .stadium-filters div[fvalue]:last-child {
-        margin-bottom: 1.2rem;
+        padding: 0 0.6rem 1rem 0.6rem;
     }
 
     .stadium-filter-inner-container {
