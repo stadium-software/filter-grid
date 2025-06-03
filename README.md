@@ -48,6 +48,8 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 
 1.0.2 Fixed alignment issue for last input field in grid (css only)
 
+1.0.2.1 Fixed dropdown width bug (css only)
+
 # Setup
 
 ## Application 
