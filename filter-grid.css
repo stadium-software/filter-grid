@@ -50,6 +50,26 @@
         background-image: none;
     }
 
+    .filtergrid-enum-operator > select.form-control,
+    .filtergrid-boolean-operator > select.form-control,
+    .filtergrid-checkbox-list > div {
+        width: auto;
+        max-width: 30rem;
+    }
+    .filtergrid-enum-operator:has(~.drop-down-container) > select.form-control,
+    .drop-down-container ~ .filtergrid-enum-operator > select.form-control,
+    .filtergrid-boolean-operator:has(~.drop-down-container) > select.form-control,
+    .drop-down-container ~ .filtergrid-boolean-operator > select.form-control,
+    .filtergrid-checkbox-list:has(~.drop-down-container) > div,
+    .drop-down-container ~ .filtergrid-checkbox-list > div {
+        width: 100%;
+        max-width: 45rem;
+    }
+
+    .filter-operator {
+        max-width: 13.5rem;
+    }
+
     .control-container:has(.filtergrid-text-value),
     .filtergrid-text-value {
         padding-right: 0;

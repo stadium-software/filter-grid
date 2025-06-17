@@ -50,7 +50,9 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 
 1.0.2.1 Fixed dropdown width bug (css only)
 
-1.1: Adjusted display width for enum, boolean, radiobuttonlist and checkboxlist displays
+1.1 Adjusted display width for enum, boolean, radiobuttonlist and checkboxlist displays
+
+1.1.1 CSS operator width layout adjustment
 
 # Setup
 
