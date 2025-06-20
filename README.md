@@ -54,6 +54,8 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 
 1.1.1 CSS operator width layout adjustment
 
+1.2 Fixed re-initialise bug
+
 # Setup
 
 ## Application 
@@ -75,7 +77,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 1.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 1.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 const insert = (arr, index, newItem) => [...arr.slice(0, index), newItem, ...arr.slice(index)];
@@ -115,18 +117,19 @@ if (filterContainer.length == 0) {
     return false;
 }
 filterContainer = filterContainer[0];
+filterContainer.classList.add("stadium-filter-container");
 let filterInnerContainer = filterContainer.querySelector(".stadium-filter-inner-container"),
     stadiumFilters  = filterContainer.querySelector(".stadium-filters");
-if (!filterInnerContainer){
-    filterContainer.classList.add("stadium-filter-container");
-    filterInnerContainer = document.createElement("div");
-    filterInnerContainer.classList.add("stadium-filter-inner-container");
-    filterContainer.appendChild(filterInnerContainer);
-    stadiumFilters = document.createElement("div");
-    stadiumFilters.classList.add("stadium-filters");
-    filterInnerContainer.appendChild(stadiumFilters);
-    initFilterForm();
+if (filterInnerContainer) {
+    filterInnerContainer.remove();
 }
+filterInnerContainer = document.createElement("div");
+filterInnerContainer.classList.add("stadium-filter-inner-container");
+filterContainer.appendChild(filterInnerContainer);
+stadiumFilters = document.createElement("div");
+stadiumFilters.classList.add("stadium-filters");
+filterInnerContainer.appendChild(stadiumFilters);
+initFilterForm();
 
 function initFilterForm() {
     for (let i = 0; i < filterConfig.length; i++) {
