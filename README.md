@@ -118,15 +118,14 @@ if (filterContainer.length == 0) {
 }
 filterContainer = filterContainer[0];
 filterContainer.classList.add("stadium-filter-container");
-let filterInnerContainer = filterContainer.querySelector(".stadium-filter-inner-container"),
-    stadiumFilters  = filterContainer.querySelector(".stadium-filters");
+let filterInnerContainer = filterContainer.querySelector(".stadium-filter-inner-container");
 if (filterInnerContainer) {
     filterInnerContainer.remove();
 }
 filterInnerContainer = document.createElement("div");
 filterInnerContainer.classList.add("stadium-filter-inner-container");
 filterContainer.appendChild(filterInnerContainer);
-stadiumFilters = document.createElement("div");
+let stadiumFilters = document.createElement("div");
 stadiumFilters.classList.add("stadium-filters");
 filterInnerContainer.appendChild(stadiumFilters);
 initFilterForm();
