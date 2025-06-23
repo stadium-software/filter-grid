@@ -859,15 +859,17 @@ Fields Definition Example
 ### Apply Button Click
 Applying filters to the full dataset and populating a DataGrid or Repeater with a reduced dataset
 
-1. Drag a *List* of type "Any" into the event handler
-2. Assign the *Label.Text* property to the List *Value* property
+1. Drag a *Variable* into the event handler
+2. Assign the *Label.Text* property to the Variable *Value* property
+3. Drag a *List* of type "Any" into the event handler
+4. Assign the *Variable* property to the List *Value* property
 
 ![](images/FilterApplyListInput.png)
 
-3. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
+5. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: The *List* containing the data (don't assign the *Label.text* directly, always converet to a List first)
-4. The "ApplyFilters" global script outputs an objet with two properties
+6. The "ApplyFilters" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
 
@@ -886,7 +888,7 @@ ApplyFilters Example Output
 }
 ```
 
-5. Drag a *SetValue* action to the event handler
+7. Drag a *SetValue* action to the event handler
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
 
