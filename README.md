@@ -868,7 +868,7 @@ Applying filters to the full dataset and populating a DataGrid or Repeater with 
 
 5. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
-   2. Data: The *List* containing the data (don't assign the *Label.text* directly, always converet to a List first)
+   2. Data: The *List* containing the data (don't assign the *Label.text* directly)
 6. The "ApplyFilters" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
