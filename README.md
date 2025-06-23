@@ -376,7 +376,7 @@ let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
     console.error("The *Data* parameter must be a List or Array.");
-    return {data: data, filters: []};
+    return false;
 }
 let filterContainer = document.querySelectorAll(filterClassName);
 if (filterContainer.length == 0) {
