@@ -56,6 +56,8 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
 
 1.2 Fixed re-initialise bug
 
+1.2.1 ApplyFilters script returns error when input data is not a List or Array
+
 # Setup
 
 ## Application 
@@ -369,9 +371,13 @@ function setAttributes(el, attrs) {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 1.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 1.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
+if (!Array.isArray(data)) {
+    console.error("The *Data* parameter must be a List or Array.");
+    return {data: data, filters: []};
+}
 let filterContainer = document.querySelectorAll(filterClassName);
 if (filterContainer.length == 0) {
     console.error("A container with the class '" + filterClassName + "' was not found.");
@@ -860,7 +866,7 @@ Applying filters to the full dataset and populating a DataGrid or Repeater with 
 
 3. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
-   2. Data: The *List* containing the data
+   2. Data: The *List* containing the data (don't assign the *Label.text* directly, always converet to a List first)
 4. The "ApplyFilters" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
