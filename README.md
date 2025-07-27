@@ -20,6 +20,10 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 
 
 
+https://github.com/user-attachments/assets/53a433ec-befc-4998-8fc0-78ecb605aa72
+
+
+
 ## Contents <!-- omit in toc -->
 - [Version](#version)
 - [Setup](#setup)
