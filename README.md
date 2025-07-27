@@ -10,19 +10,18 @@ A module to generate sets of filters and to filter JSON arrays. This module enab
 Filters can be displaied in two different ways:
 
 1. Form
+
 ![](images/FormView.png)
+
 2. Chips
+
 ![](images/ChipsView.png)
 
 This module can be used in conjunction with DataGrids and [Client-Side Repeater DataGrids](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script with smaller datasets instead of the similar [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
-
-
 https://github.com/user-attachments/assets/53a433ec-befc-4998-8fc0-78ecb605aa72
-
-
 
 ## Contents <!-- omit in toc -->
 - [Version](#version)
