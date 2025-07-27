@@ -7,11 +7,18 @@ A module to generate sets of filters and to filter JSON arrays. This module enab
 3. Resetting / clearing filtergrids
 4. Populating filtergrids from sets of saved filters
 
+Filters can be displaied in two different ways:
+
+1. Form
+![](images/FormView.png)
+2. Chips
+![](images/ChipsView.png)
+
 This module can be used in conjunction with DataGrids and [Client-Side Repeater DataGrids](https://github.com/stadium-software/repeater-datagrid-client-side) alike. Use this script with smaller datasets instead of the similar [DataGrid Advanced Search](https://github.com/stadium-software/datagrid-advanced-search). 
 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
-https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
+
 
 ## Contents <!-- omit in toc -->
 - [Version](#version)
@@ -30,6 +37,7 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
     - [Page.Load](#pageload)
     - [Apply Button Click](#apply-button-click)
     - [Clear Filters Button Click](#clear-filters-button-click)
+  - [Integrated Button Display](#integrated-button-display)
   - [Saved Filters](#saved-filters)
     - [Saving Filters](#saving-filters)
     - [Applying Saved Filters](#applying-saved-filters)
@@ -42,21 +50,7 @@ https://github.com/user-attachments/assets/fbd26ac9-1c81-4a2a-9980-18d585c7f125
   - [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-1.1
-
-1.0.1 Changed px to rem; upgraded readme to 6.12+
-
-1.0.2 Fixed alignment issue for last input field in grid (css only)
-
-1.0.2.1 Fixed dropdown width bug (css only)
-
-1.1 Adjusted display width for enum, boolean, radiobuttonlist and checkboxlist displays
-
-1.1.1 CSS operator width layout adjustment
-
-1.2 Fixed re-initialise bug
-
-1.2.1 ApplyFilters script returns error when input data is not a List or Array
+2.0
 
 # Setup
 
@@ -76,12 +70,16 @@ This module requires the creation of four separate scripts. Each of these can be
 2. Add the input parameters below to the Global Script
    1. FilterConfig
    2. FilterContainerClass
+   3. Display
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 1.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
+let filtersDisplay = ~.Parameters.Input.Display || "form";
+let displayChips = true;
+if (filtersDisplay.toLowerCase() === "form") displayChips = false;
 const insert = (arr, index, newItem) => [...arr.slice(0, index), newItem, ...arr.slice(index)];
 let numberSelectChange = (e) => {
     let target = e.target;
@@ -93,7 +91,7 @@ let numberSelectChange = (e) => {
         fromEl.setAttribute("placeholder", "Value");
     } else { 
         toEl.classList.remove("visually-hidden");
-        fromEl.setAttribute("placeholder", "From value");
+        fromEl.setAttribute("placeholder", "From");
     }
 };
 let dateSelectChange = (e) => {
@@ -107,7 +105,7 @@ let dateSelectChange = (e) => {
         fromEl.setAttribute("placeholder", "Date");
     } else { 
         toEl.classList.remove("visually-hidden");
-        fromEl.setAttribute("placeholder", "From date");
+        fromEl.setAttribute("placeholder", "From");
     }
 };
 let filterContainer = document.querySelectorAll(filterClassName);
@@ -120,18 +118,49 @@ if (filterContainer.length == 0) {
 }
 filterContainer = filterContainer[0];
 filterContainer.classList.add("stadium-filter-container");
-let filterInnerContainer = filterContainer.querySelector(".stadium-filter-inner-container");
-if (filterInnerContainer) {
-    filterInnerContainer.remove();
+if (!displayChips) {
+    filterContainer.classList.add("stadium-filter-form-display");
+} else {
+    filterContainer.classList.add("stadium-filter-chips-display");
 }
-filterInnerContainer = document.createElement("div");
-filterInnerContainer.classList.add("stadium-filter-inner-container");
-filterContainer.appendChild(filterInnerContainer);
+let filters = filterContainer.querySelector(".stadium-filters");
+if (filters) {
+    filters.remove();
+}
+let filterInnerContainer = filterContainer.querySelector(".stadium-filter-inner-container");
+if (!filterInnerContainer) {
+    filterInnerContainer = document.createElement("div");
+    filterInnerContainer.classList.add("stadium-filter-inner-container");
+    filterContainer.appendChild(filterInnerContainer);
+}
 let stadiumFilters = document.createElement("div");
 stadiumFilters.classList.add("stadium-filters");
 filterInnerContainer.appendChild(stadiumFilters);
+let control = filterContainer.querySelectorAll(".control-container");
+if (control.length > 0 && !filterContainer.querySelector(".filter-buttons") && displayChips) {
+    let filterButtons = document.createElement("div");
+    filterButtons.classList.add("filter-buttons");
+    for (let i = 0; i < control.length; i++) {
+        if (i === 0) { 
+            control[i].classList.add("apply-button");
+            control[i].querySelector("button").textContent = "";
+        }
+        if (i === 1) {
+            control[i].classList.add("clear-button");
+            control[i].querySelector("button").textContent = "";
+        }
+        filterButtons.appendChild(control[i]);
+    }
+    filterInnerContainer.prepend(filterButtons);
+} else if (control.length > 0) {
+    let stackLayout = document.createElement("div");
+    stackLayout.classList.add("stack-layout-container");
+    for (let i = 0; i < control.length; i++) {
+        stackLayout.appendChild(control[i]);
+    }
+    insertAfter(stadiumFilters, stackLayout);
+}
 initFilterForm();
-
 function initFilterForm() {
     for (let i = 0; i < filterConfig.length; i++) {
         let column = filterConfig[i].column;
@@ -156,13 +185,15 @@ function initFilterForm() {
 
         if (type == "text") {
             select = document.createElement("select");
-            let options = ["Contains", "Does not contain", "Equals", "Does not equal"];
+            let options = [{text:"Contains",value:"Contains"}, {text:"Does not contain",value:"Does not contain"}, {text:"Equals",value:"Equals"}, {text:"Does not equal",value:"Does not equal"}];
+            if (displayChips) options = options = [{text:"Con",value:"Contains"}, {text:"!Con",value:"Does not contain"}, {text:"=",value:"Equals"}, {text:"!=",value:"Does not equal"}];
             for (let s = 0; s < options.length; s++) {
                 let opt = options[s];
-                if (operators.includes(opt.toLowerCase()) || operators.length == 0) {
+                if (operators.includes(opt.value.toLowerCase()) || operators.length == 0) {
                     let el = document.createElement("option");
-                    el.textContent = opt;
-                    el.value = opt;
+                    el.textContent = opt.text;
+                    el.value = opt.value;
+                    el.setAttribute("orig", opt.text);
                     select.appendChild(el);
                 }
             }
@@ -172,17 +203,20 @@ function initFilterForm() {
             input = document.createElement("input");
             input.classList.add("form-control", "text-box-input", "filtergrid-text-value");
             input.setAttribute("placeholder", "Text");
+            input.addEventListener("change", setTitle);
             valueField.classList.add("control-container", "text-box-container");
         }
         if (type == "number") {
             select = document.createElement("select");
-            let options = ["From-To", "Between", "Equals", "Greater than", "Smaller than"];
+            let options = [{text:"From-To",value:"From-To"}, {text:"Between",value:"Between"}, {text:"Equals",value:"Equals"}, {text:"Greater than",value:"Greater than"}, {text:"Smaller than",value:"Smaller than"}];
+            if (displayChips) options = [{text:"x-y",value:"From-To"}, {text:"x< >y",value:"Between"}, {text:"=",value:"Equals"}, {text:">",value:"Greater than"}, {text:"<",value:"Smaller than"}];
             for(let s = 0; s < options.length; s++) {
                 let opt = options[s];
-                if (operators.includes(opt.toLowerCase()) || operators.length == 0) {
+                if (operators.includes(opt.value.toLowerCase()) || operators.length == 0) {
                     let el = document.createElement("option");
-                    el.textContent = opt;
-                    el.value = opt;
+                    el.textContent = opt.text;
+                    el.value = opt.value;
+                    el.setAttribute("orig", opt.text);
                     select.appendChild(el);
                 }
             }
@@ -191,10 +225,12 @@ function initFilterForm() {
             operator.classList.add("control-container", "drop-down-container");
             let numInput1 = document.createElement("input");
             numInput1.classList.add("form-control", "text-box-input", "filtergrid-from-number");
-            numInput1.setAttribute("placeholder", "From value");
+            numInput1.setAttribute("placeholder", "From");
+            numInput1.addEventListener("change", setTitle);
             let numInput2 = document.createElement("input");
             numInput2.classList.add("form-control", "text-box-input", "filtergrid-to-number");
-            numInput2.setAttribute("placeholder", "To value");
+            numInput2.setAttribute("placeholder", "To");
+            numInput2.addEventListener("change", setTitle);
             input = document.createElement("div");
             input.classList.add("number-values");
             select.addEventListener("change", numberSelectChange);
@@ -204,13 +240,15 @@ function initFilterForm() {
         if (type == "date") {
             if (!format) format = 'YYYY/MM/DD';
             select = document.createElement("select");
-            let options = ["From-To", "Between", "Equals", "Greater than", "Smaller than"];
+            let options = [{text:"From-To",value:"From-To"}, {text:"Between",value:"Between"}, {text:"Equals",value:"Equals"}, {text:"Greater than",value:"Greater than"}, {text:"Smaller than",value:"Smaller than"}];
+            if (displayChips) options = [{text:"x-y",value:"From-To"}, {text:"x< >y",value:"Between"}, {text:"=",value:"Equals"}, {text:">",value:"Greater than"}, {text:"<",value:"Smaller than"}];
             for(let s = 0; s < options.length; s++) {
                 let opt = options[s];
-                if (operators.includes(opt.toLowerCase()) || operators.length == 0) {
+                if (operators.includes(opt.value.toLowerCase()) || operators.length == 0) {
                     let el = document.createElement("option");
-                    el.textContent = opt;
-                    el.value = opt;
+                    el.textContent = opt.text;
+                    el.value = opt.value;
+                    el.setAttribute("orig", opt.text);
                     select.appendChild(el);
                 }
             }
@@ -219,11 +257,13 @@ function initFilterForm() {
             operator.classList.add("control-container", "drop-down-container");
             let dtInput1 = document.createElement("input");
             dtInput1.classList.add("form-control", "text-box-input", "filtergrid-from-date");
-            dtInput1.setAttribute("placeholder", "From date");
+            dtInput1.setAttribute("placeholder", "From");
             dtInput1.setAttribute("format", format);
+            dtInput1.addEventListener("change", setTitle);
             let dtInput2 = document.createElement("input");
             dtInput2.classList.add("form-control", "text-box-input", "filtergrid-to-date");
-            dtInput2.setAttribute("placeholder", "To date");
+            dtInput2.setAttribute("placeholder", "To");
+            dtInput2.addEventListener("change", setTitle);
             if (display == "picker") {
                 dtInput1.type = "date";
                 dtInput2.type = "date";
@@ -239,7 +279,7 @@ function initFilterForm() {
                 data = ["Show all", "Yes", "No" ];
             }
             if (!data.includes('Show all')) data = insert(data, 0, "Show all");
-            if (display == "dropdown") {
+            if (display == "dropdown" || (display == "radio" || !display && displayChips)) {
                 select = document.createElement("select");
                 for(let s = 0; s < data.length; s++) {
                     let opt = data[s];
@@ -249,7 +289,9 @@ function initFilterForm() {
                     el.text = opt;
                     select.appendChild(el);
                 }
+                display = "dropdown";
                 select.classList.add("form-control");
+                select.addEventListener("change", setTitle);
                 operator.classList.add("control-container", "drop-down-container", "filtergrid-boolean-operator", "span-2");
             } else {
                 select = document.createElement("div");
@@ -279,7 +321,7 @@ function initFilterForm() {
         }
         if (type == "enum") {
             data = insert(data, 0, "Show all");
-            if (display == "radio") {
+            if (display == "radio" || display == "dropdown" && !displayChips) {
                 select = document.createElement("div");
                 for (let s = 0; s < data.length; s++) {
                     let cont = document.createElement("div");
@@ -311,6 +353,7 @@ function initFilterForm() {
                     select.appendChild(el);
                 }
                 select.classList.add("form-control");
+                select.addEventListener("change", setTitle);
                 operator.classList.add("control-container", "drop-down-container", "filtergrid-enum-operator", "span-2");
             }
             input = document.createElement("div");
@@ -344,17 +387,136 @@ function initFilterForm() {
 
         setAttributes(valueField, { "fvalue": column, "ftype": type, "cno": colNo, "fdisplay": display });
         valueField.appendChild(input);
-
-        stadiumFilters.appendChild(label);
-        stadiumFilters.appendChild(operator);
-        stadiumFilters.appendChild(valueField);
+        if (!displayChips) {
+            stadiumFilters.appendChild(label);
+            stadiumFilters.appendChild(operator);
+            stadiumFilters.appendChild(valueField);
+        } else {
+            let chip = document.createElement("div");
+            chip.classList.add("stadium-filter-chip");
+            chip.appendChild(label);
+            chip.appendChild(operator);
+            chip.appendChild(valueField);
+            stadiumFilters.appendChild(chip);
+        }
         select.dispatchEvent(new Event('change'));
     }
+    if (displayChips) {
+        let allOperators = filterInnerContainer.querySelectorAll(".filter-operator");
+        for (let i = 0; i < allOperators.length; i++) {
+            setDropDownText(allOperators[i]);
+        }
+        let allMultiSelects = filterInnerContainer.querySelectorAll(".check-box-list-container");
+        for (let i = 0; i < allMultiSelects.length; i++) {
+            createDropDown(allMultiSelects[i]);
+        }
+    }
+}
+function setTitle(e) {
+    e.target.title = e.target.value;
+}
+function setDropDownText(select) {
+    select.addEventListener('blur', (e) => {
+        let t = e.target;
+        let o = t.options;
+        for (let i = 0; i < o.length; i++) {
+            o[i].text = o[i].getAttribute("orig");
+        }
+    });
+    select.addEventListener('change', (e) => {
+        let t = e.target;
+        let o = t.options;
+        for (let i = 0; i < o.length; i++) {
+            o[i].text = o[i].getAttribute("orig");
+        }
+        document.body.focus();
+    });
+    select.addEventListener('focus', (e) => {
+        let t = e.target;
+        let o = t.options;
+        for (let i = 0; i < o.length; i++) {
+            o[i].text = o[i].text + " " + o[i].value;
+            unsetDropDownText(o[i]);
+        }
+    });
+}
+function unsetDropDownText(opt) {
+    opt.addEventListener('click', (e) => {
+        e.target.closest("select").dispatchEvent(new Event('blur'));
+    });
 }
 function setAttributes(el, attrs) {
   for(var key in attrs) {
     el.setAttribute(key, attrs[key]);
   }
+}
+function createDropDown(clist) {
+    clist.classList.add("stadium-multi-select-dropdown");
+    let header = document.createElement("div");
+    header.textContent = "0 selected";
+    header.classList.add("stadium-multi-select-dropdown-header", "control-container");
+    header.addEventListener("click", function (e) {
+        let head = e.target;
+        let list = head.closest(".check-box-list-container");
+        list.classList.toggle("expand");
+        setHeader(head, list);
+    });
+    let clistItems = clist.querySelectorAll("div")[0];
+    clistItems.classList.add("stadium-multi-select-checkboxlist");
+    clistItems.before(header);
+
+    document.body.addEventListener("click", function (e) {
+        if (!e.target.closest(".check-box-list-container")) {
+            let allDD = document.querySelectorAll(".check-box-list-container:has(.stadium-multi-select-checkboxlist)");
+            for (let i = 0; i < allDD.length; i++) {
+                let head = allDD[i].querySelector(".stadium-multi-select-dropdown-header");
+                let list = head.closest(".check-box-list-container");
+                list.classList.remove("expand");
+                setHeader(head, list);
+            }
+        }
+    });
+}
+function setHeader(header, l) {
+    let s = l.querySelectorAll('input[type="checkbox"]:checked');
+    let t = [];
+    for (let i = 0; i < s.length; i++) {
+        t.push(s[i].value);
+    }
+    header.textContent = s.length + " selected";
+    header.title = t.join(", ");
+}
+function insertAfter(referenceNode, newNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+function detectFlexWrap(flexContainer) {
+    const flexItems = Array.from(flexContainer.children);
+    if (flexItems.length <= 1) {
+        return false;
+    }
+    let isWrapped = false;
+    for (let i = 1; i < flexItems.length; i++) {
+        const prevItem = flexItems[i - 1];
+        const currentItem = flexItems[i];
+        if (currentItem.offsetLeft < prevItem.offsetLeft) {
+            isWrapped = true;
+            break;
+        }
+    }
+    let buttonContainer = filterInnerContainer.querySelector(".filter-buttons");
+    if (buttonContainer) {
+        if (isWrapped) {
+            buttonContainer.classList.remove("row-display");
+        } else {
+            buttonContainer.classList.add("row-display");
+        }
+    }
+}
+if (displayChips) {
+    window.onresize = function() {
+        let flex = filterInnerContainer.querySelector(".stadium-filters");
+        setTimeout(detectFlexWrap(flex), 1000);
+    };
 }
 ```
 
@@ -371,7 +533,7 @@ function setAttributes(el, attrs) {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 1.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -561,7 +723,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 1.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -572,7 +734,9 @@ else if (filterContainer.length > 1) {
     console.error("The class '" + filterClassName + "' is assigned to multiple controls. Assign a unique classname to the filter container");
     return false;
 }
-filterContainer=filterContainer[0];
+filterContainer = filterContainer[0];
+let displayChips = false;
+if (filterContainer.classList.contains("stadium-filter-chips-display")) displayChips = true;
 let stadiumFilters=filterContainer.querySelector(".stadium-filters");
 clearForm();
 function clearForm() {
@@ -601,6 +765,22 @@ function clearForm() {
     for (let i=0; i < operators.length; i++) {
         operators[i].dispatchEvent(new Event('change'));
     }
+    if (displayChips) {
+        let allMultiSelects = stadiumFilters.querySelectorAll(".check-box-list-container");
+        for (let i = 0; i < allMultiSelects.length; i++) {
+            setHeader(allMultiSelects[i]);
+        }
+    }
+}
+function setHeader(c) {
+    let s = c.querySelectorAll('input[type="checkbox"]:checked');
+    let header = c.querySelector(".stadium-multi-select-dropdown-header");
+    let t = [];
+    for (let i = 0; i < s.length; i++) {
+        t.push(s[i].value);
+    }
+    header.textContent = s.length + " selected";
+    header.title = t.join(", ");
 }
 ```
 
@@ -612,7 +792,7 @@ function clearForm() {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 1.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
@@ -624,11 +804,13 @@ if (filterContainer.length == 0) {
     return false;
 }
 filterContainer = filterContainer[0];
+let displayChips = false;
+if (filterContainer.classList.contains("stadium-filter-chips-display")) displayChips = true;
 let stadiumFilters = filterContainer.querySelector(".stadium-filters");
 if (selectedFilters.length > 0) {
     setSelectedFilters();
 }
-function setSelectedFilters(){
+function setSelectedFilters() {
     clearForm();
     for (let i=0;i < selectedFilters.length;i++) {
         let column = selectedFilters[i].column, 
@@ -694,9 +876,20 @@ function setSelectedFilters(){
             for (let s = 0; s < checkinputs.length; s++) {
                 if (selectedvalues && selectedvalues.length > 0 && selectedvalues.includes(checkinputs[s].value)) checkinputs[s].checked = true;
             }
+            if (displayChips && checkinputs.length > 0) setHeader(checkinputs[0].closest(".stadium-multi-select-dropdown"));
         }
         if (select) select.dispatchEvent(new Event('change'));
     }
+}
+function setHeader(c) {
+    let s = c.querySelectorAll('input[type="checkbox"]:checked');
+    let header = c.querySelector(".stadium-multi-select-dropdown-header");
+    let t = [];
+    for (let i = 0; i < s.length; i++) {
+        t.push(s[i].value);
+    }
+    header.textContent = s.length + " selected";
+    header.title = t.join(", ");
 }
 function clearForm() { 
     let allCheckboxes = stadiumFilters.querySelectorAll("input[type='checkbox']");
@@ -723,6 +916,12 @@ function clearForm() {
     let operators = stadiumFilters.querySelectorAll(".filter-operator");
     for (let i = 0; i < operators.length; i++) {
         operators[i].dispatchEvent(new Event('change'));
+    }
+    if (displayChips) {
+        let allMultiSelects = stadiumFilters.querySelectorAll(".check-box-list-container");
+        for (let i = 0; i < allMultiSelects.length; i++) {
+            setHeader(allMultiSelects[i]);
+        }
     }
 }
 ```
@@ -785,8 +984,8 @@ Generating the filtergrid, populating a DataGrid or Repeater with data and stori
       1. text
       2. date
       3. number
-      4. boolean (by default a radiobuttonlist, can optionally be displayed as a dropdown)
-      5. enum (by default a dropdown, can optionally be displayed as a radiobuttonlist)
+      4. boolean (by default a radiobuttonlist in "forms" display, but can be set to dropdown, always a dropdown in "chips" display)
+      5. enum (by default a dropdown, can optionally be displayed as a radiobuttonlist when not using "chips" display)
       6. multiselect (checkboxlist)
    2. *name*: the label displayed for the filter
    3. *column*: the column name to which the filter must be applied (as specified in the DataGrid "Column" property)
@@ -854,7 +1053,7 @@ Fields Definition Example
 6. Drag the "GenerateFilters" global script to the event handler and provide parameter values
    1. FilterConfig: The *FilterConfig* List defining the filter fields
    2. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
-   3. SelectedFilters: Optionally provide a List of saved filters ([see saved filters](#saving-filters))
+   3. Display: Optionally set to "chips" to display the filtergrid as a chips display (default is form)
 
 ### Apply Button Click
 Applying filters to the full dataset and populating a DataGrid or Repeater with a reduced dataset
@@ -899,13 +1098,24 @@ Clearing all user-set values from a filtergrid
 
 1. Drag the "ClearFilters" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
-2. Drag a *List* into the event handler
-2. Assign the *Label.Text* property to the List *Value* property
-3. Drag a *SetValue* action to the event handler
+2. Drag a *Variable* into the event handler
+3. Assign the *Label.Text* property to the Variable *Value* property
+4. Drag a *List* into the event handler
+5. Assign the *Variable* property to the List *Value* property
+6. Drag a *SetValue* action to the event handler
    1. Target: The DataGrid.Data or the Repeater.List property
    2. Source: The List containing the full dataset
 
 ![Clear Button Event Handler](images/ClearEventHandler.png)
+
+## Integrated Button Display
+When using "chips" display, action buttons (Apply & Clear) can be shown next to the filters as shown below. 
+
+![](images/ChipsButtons.png)
+
+To achieve this, place the two button controls into the FilterGrid container control. 
+
+![](images/ButtonControls.png)
 
 ## Saved Filters
 Saving user-defined filter criteria and applying it to a filtergrid at a later time
@@ -943,10 +1153,8 @@ ApplyFilters Example Output
 ![Apply Saved Filters](images/ApplySaved.png)
 
 ## Display Options
-Allowing users to collaps and expand filtergrids
-
-### Collapsible
-Use the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module to display the filtergrid and filter buttons in a collapisble container control. 
+1. Allowing users to collaps and expand filtergrids can be achieved by using the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module
+2. The filtergrid can be displayed as a chips display by setting the *Display* property to "chips" in the *GenerateFilters* global script
 
 ![Collapsible Controls](images/CollapsibleControls.png)
 
