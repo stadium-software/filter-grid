@@ -47,11 +47,11 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
       1. [Page.Load](#pageload)
       2. [Apply Button Click](#apply-button-click)
       3. [Clear Filters Button Click](#clear-filters-button-click)
-   6. [Integrated Button Display](#integrated-button-display)
-   7. [Saved Filters](#saved-filters)
+   6. [Saved Filters](#saved-filters)
       1. [Saving Filters](#saving-filters)
       2. [Applying Saved Filters](#applying-saved-filters)
 3. [Display Options](#display-options)
+   1. [Integrated Button Display](#integrated-button-display)
 4. [CSS](#css)
    1. [Before v6.12](#before-v612)
       1. [Customising CSS](#customising-css)
@@ -1518,15 +1518,6 @@ Clearing all user-set values from a filtergrid
 
 ![Clear Button Event Handler](images/ClearEventHandler.png)
 
-## Integrated Button Display
-When using "chips" display, action buttons (Apply & Clear) can be shown next to the filters as shown below. 
-
-![](images/ChipsButtons.png)
-
-To achieve this, place the two button controls into the FilterGrid container control. 
-
-![](images/ButtonControls.png)
-
 ## Saved Filters
 Saving user-defined filter criteria and applying it to a filtergrid at a later time
 
@@ -1567,6 +1558,15 @@ ApplyFilters Example Output
 2. The filtergrid can be displayed as a chips display by setting the *Display* property to "chips" in the *GenerateFilters* global script
 
 ![Collapsible Controls](images/CollapsibleControls.png)
+
+## Integrated Button Display
+When using "chips" display, action buttons (Apply & Clear) can be shown next to the filters as shown below. 
+
+![](images/ChipsButtons.png)
+
+To achieve this, place the two button controls into the FilterGrid container control. 
+
+![](images/ButtonControls.png)
 
 # CSS
 The CSS below is required for the correct functioning of the module. Variables exposed in the [*filter-grid-variables.css*](filter-grid-variables.css) file can be [customised](#customising-css).
