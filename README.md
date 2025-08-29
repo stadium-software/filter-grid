@@ -63,6 +63,8 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
 
+2.2 Added icon color variable to [*filter-grid-variables.css*](filter-grid-variables.css)
+
 # Setup
 
 ## Application 
@@ -85,7 +87,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
@@ -853,24 +855,26 @@ function loadCSS() {
         padding: 0.2rem 0.6rem;
     }
     .apply-button *:is(.btn-default) {
-        background-image: var(--filter-chips-apply-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='%23333333' d='m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z'/%3E%3C/svg%3E"));
-        background-repeat: no-repeat;
-        background-size: var(--filter-chips-apply-button-icon-size, 2.5rem);
-        background-color: transparent;
-        background-position: center;
-        height: var(--filter-chips-apply-button-icon-size, 2.5rem);
-        width: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        mask-image: var(--filter-chips-apply-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='currentColor' d='m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z'/%3E%3C/svg%3E"));
+        mask-repeat: no-repeat;
+        mask-position: center;
+        mask-size: contain;
+        background-size: var(--filter-chips-apply-clear-icon-size, 2.5rem);
+        background-color: var(--filter-chips-apply-clear-icon-color, var(--BODY-FONT-COLOR));
+        height: var(--filter-chips-apply-clear-icon-size, 2.5rem);
+        width: var(--filter-chips-apply-clear-icon-size, 2.5rem);
         box-shadow: none;
    }
     .clear-button *:is(.btn-default) {
-        background-image: var(--filter-chips-clear-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='%23333333' d='m12 13.4l-2.917 2.925q-.277.275-.704.275t-.704-.275q-.275-.275-.275-.7t.275-.7L10.6 12L7.675 9.108Q7.4 8.831 7.4 8.404t.275-.704q.275-.275.7-.275t.7.275L12 10.625L14.892 7.7q.277-.275.704-.275t.704.275q.3.3.3.713t-.3.687L13.375 12l2.925 2.917q.275.277.275.704t-.275.704q-.3.3-.712.3t-.688-.3z'/%3E%3C/svg%3E"));
-        background-repeat: no-repeat;
-        background-size: var(--filter-chips-apply-button-icon-size, 2.5rem);
-        background-color: transparent;
-        background-position: center;
+        mask-image: var(--filter-chips-clear-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='currentColor' d='m12 13.4l-2.917 2.925q-.277.275-.704.275t-.704-.275q-.275-.275-.275-.7t.275-.7L10.6 12L7.675 9.108Q7.4 8.831 7.4 8.404t.275-.704q.275-.275.7-.275t.7.275L12 10.625L14.892 7.7q.277-.275.704-.275t.704.275q.3.3.3.713t-.3.687L13.375 12l2.925 2.917q.275.277.275.704t-.275.704q-.3.3-.712.3t-.688-.3z'/%3E%3C/svg%3E"));
+        mask-repeat: no-repeat;
+        mask-position: center;
+        mask-size: contain;
+        background-size: var(--filter-chips-apply-clear-icon-size, 2.5rem);
+        background-color: var(--filter-chips-apply-clear-icon-color, var(--BODY-FONT-COLOR));
         border-color: transparent;
-        height: var(--filter-chips-apply-button-icon-size, 2.5rem);
-        width: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        height: var(--filter-chips-apply-clear-icon-size, 2.5rem);
+        width: var(--filter-chips-apply-clear-icon-size, 2.5rem);
         box-shadow: none;
     }
     .apply-button *:is(.btn-default:hover), 
@@ -900,7 +904,7 @@ html {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -1090,7 +1094,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -1159,7 +1163,7 @@ function setHeader(c) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
