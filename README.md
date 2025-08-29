@@ -55,7 +55,7 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 4. [CSS](#css)
    1. [Before v6.12](#before-v612)
    2. [Customising CSS](#customising-css)
-   3. [Upgrading Stadium Repos](#upgrading-stadium-repos)
+5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
 2.1
@@ -1590,7 +1590,7 @@ The CSS below is required for the correct functioning of the module. Variables e
 ``` 
 6. Add the file to the "CSS" inside of your Embedded Files in your application
 
-## Upgrading Stadium Repos
+# Upgrading Stadium Repos
 Stadium Repos are not static. They change as additional features are added and bugs are fixed. Using the right method to work with Stadium Repos allows for upgrading them in a controlled manner. 
 
 How to use and update application repos is described here: [Working with Stadium Repos](https://github.com/stadium-software/samples-upgrading)
