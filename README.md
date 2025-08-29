@@ -1297,6 +1297,9 @@ function clearForm() {
 The types can create one nested type manually or use the import option to generate the type. How the type is used remains the same
 
 ### FilterConfig Type Setup (Required)
+The completed type should have the structure shown below
+
+![Filters ConfigType Setup](images/TypeSetup.png)
 
 #### Manual Type Creation
 1. Add a type called "FilterConfig" to the types collection in the Stadium Application Explorer
@@ -1310,8 +1313,6 @@ The types can create one nested type manually or use the import option to genera
    6. format (Any)
    7. operators (List)
       1. Item (Any)
-
-![Filters ConfigType Setup](images/TypeSetup.png)
 
 #### Type Import
 1. Right-click on the `Types` node in the `Application Explorer`
