@@ -58,7 +58,7 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.1
+2.2
 
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
