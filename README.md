@@ -51,12 +51,11 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
    7. [Saved Filters](#saved-filters)
       1. [Saving Filters](#saving-filters)
       2. [Applying Saved Filters](#applying-saved-filters)
-   8. [Display Options](#display-options)
-   9. [CSS](#css)
-      1. [Before v6.12](#before-v612)
-      2. [v6.12+](#v612)
-      3. [Customising CSS](#customising-css)
-   10. [Upgrading Stadium Repos](#upgrading-stadium-repos)
+3. [Display Options](#display-options)
+4. [CSS](#css)
+   1. [Before v6.12](#before-v612)
+      1. [Customising CSS](#customising-css)
+   2. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
 2.1
@@ -1563,30 +1562,21 @@ ApplyFilters Example Output
 
 ![Apply Saved Filters](images/ApplySaved.png)
 
-## Display Options
+# Display Options
 1. Allowing users to collaps and expand filtergrids can be achieved by using the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module
 2. The filtergrid can be displayed as a chips display by setting the *Display* property to "chips" in the *GenerateFilters* global script
 
 ![Collapsible Controls](images/CollapsibleControls.png)
 
-## CSS
+# CSS
 The CSS below is required for the correct functioning of the module. Variables exposed in the [*filter-grid-variables.css*](filter-grid-variables.css) file can be [customised](#customising-css).
 
-### Before v6.12
+## Before v6.12
 1. Create a folder called "CSS" inside of your Embedded Files in your application
 2. Drag the two CSS files from this repo [*filter-grid-variables.css*](filter-grid-variables.css) and [*filter-grid.css*](filter-grid.css) into that folder
 3. Paste the link tags below into the *head* property of your application
 ```html
-<link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid.css">
 <link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
-``` 
-
-### v6.12+
-1. Create a folder called "CSS" inside of your Embedded Files in your application
-2. Drag the CSS files from this repo [*filter-grid.css*](filter-grid.css) into that folder
-3. Paste the link tag below into the *head* property of your application
-```html
-<link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid.css">
 ``` 
 
 ### Customising CSS
@@ -1599,8 +1589,6 @@ The CSS below is required for the correct functioning of the module. Variables e
 <link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
 ``` 
 6. Add the file to the "CSS" inside of your Embedded Files in your application
-
-**NOTE: Do not change any of the CSS in the 'filter-grid.css' file**
 
 ## Upgrading Stadium Repos
 Stadium Repos are not static. They change as additional features are added and bugs are fixed. Using the right method to work with Stadium Repos allows for upgrading them in a controlled manner. 
