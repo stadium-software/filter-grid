@@ -54,8 +54,8 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
    1. [Integrated Button Display](#integrated-button-display)
 4. [CSS](#css)
    1. [Before v6.12](#before-v612)
-      1. [Customising CSS](#customising-css)
-   2. [Upgrading Stadium Repos](#upgrading-stadium-repos)
+   2. [Customising CSS](#customising-css)
+   3. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
 2.1
@@ -1579,7 +1579,7 @@ The CSS below is required for the correct functioning of the module. Variables e
 <link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
 ``` 
 
-### Customising CSS
+## Customising CSS
 1. Open the CSS file called [*filter-grid-variables.css*](filter-grid-variables.css) from this repo
 2. Adjust the variables in the *:root* element as you see fit
 3. Stadium 6.12+ users can comment out any variable they do **not** want to customise
