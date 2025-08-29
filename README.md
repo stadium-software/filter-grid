@@ -1,6 +1,8 @@
 # Filter Grid Generator <!-- omit in toc -->
 
-A module to generate sets of filters and to filter JSON arrays. This module enables for four separate functions:
+A module to generate sets of filters and to filter JSON arrays. This module can be used in connection with any JSON dataset. 
+
+Four separate functions are provided:
 
 1. Generating filters grids
 2. Applying sets of filters to JSON arrays
@@ -24,36 +26,43 @@ This module can be used in conjunction with DataGrids and [Client-Side Repeater 
 If you are using this module in connection with a [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) set up all elements necessary for the [Client-Side Repeater DataGrid](https://github.com/stadium-software/repeater-datagrid-client-side) before adding this filter grid module. 
 
 ## Contents <!-- omit in toc -->
-- [Version](#version)
-- [Setup](#setup)
-  - [Application](#application)
-  - [Global Scripts](#global-scripts)
-    - [GenerateFilters Script](#generatefilters-script)
-    - [ApplyFilters Script](#applyfilters-script)
-    - [ClearFilters Script](#clearfilters-script)
-    - [SetFilters Script](#setfilters-script)
-  - [Types](#types)
-    - [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
-    - [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
-  - [Page](#page)
-  - [Event Handlers](#event-handlers)
-    - [Page.Load](#pageload)
-    - [Apply Button Click](#apply-button-click)
-    - [Clear Filters Button Click](#clear-filters-button-click)
-  - [Integrated Button Display](#integrated-button-display)
-  - [Saved Filters](#saved-filters)
-    - [Saving Filters](#saving-filters)
-    - [Applying Saved Filters](#applying-saved-filters)
-  - [Display Options](#display-options)
-    - [Collapsible](#collapsible)
-  - [CSS](#css)
-    - [Before v6.12](#before-v612)
-    - [v6.12+](#v612)
-    - [Customising CSS](#customising-css)
-  - [Upgrading Stadium Repos](#upgrading-stadium-repos)
+1. [Version](#version)
+   1. [Change Log](#change-log)
+2. [Setup](#setup)
+   1. [Application](#application)
+   2. [Global Scripts](#global-scripts)
+      1. [GenerateFilters Script](#generatefilters-script)
+      2. [ApplyFilters Script](#applyfilters-script)
+      3. [ClearFilters Script](#clearfilters-script)
+      4. [SetFilters Script](#setfilters-script)
+   3. [Types](#types)
+      1. [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
+         1. [Manual Type Creation](#manual-type-creation)
+         2. [Type Import](#type-import)
+      2. [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
+         1. [Manual Type Creation](#manual-type-creation-1)
+         2. [Type Import](#type-import-1)
+   4. [Page](#page)
+   5. [Event Handlers](#event-handlers)
+      1. [Page.Load](#pageload)
+      2. [Apply Button Click](#apply-button-click)
+      3. [Clear Filters Button Click](#clear-filters-button-click)
+   6. [Integrated Button Display](#integrated-button-display)
+   7. [Saved Filters](#saved-filters)
+      1. [Saving Filters](#saving-filters)
+      2. [Applying Saved Filters](#applying-saved-filters)
+   8. [Display Options](#display-options)
+   9. [CSS](#css)
+      1. [Before v6.12](#before-v612)
+      2. [v6.12+](#v612)
+      3. [Customising CSS](#customising-css)
+   10. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.0
+2.1
+
+## Change Log
+2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
 
 # Setup
 
@@ -77,10 +86,11 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
+loadCSS();
 let displayChips = true;
 if (filtersDisplay.toLowerCase() === "form") displayChips = false;
 const insert = (arr, index, newItem) => [...arr.slice(0, index), newItem, ...arr.slice(index)];
@@ -420,33 +430,26 @@ function setTitle(e) {
 }
 function setDropDownText(select) {
     select.addEventListener('blur', (e) => {
-        let t = e.target;
-        let o = t.options;
-        for (let i = 0; i < o.length; i++) {
-            o[i].text = o[i].getAttribute("orig");
-        }
+        resetOperatorOptions(e.target);
     });
     select.addEventListener('change', (e) => {
-        let t = e.target;
-        let o = t.options;
-        for (let i = 0; i < o.length; i++) {
-            o[i].text = o[i].getAttribute("orig");
-        }
-        document.body.focus();
+        resetOperatorOptions(e.target);
     });
-    select.addEventListener('focus', (e) => {
-        let t = e.target;
-        let o = t.options;
-        for (let i = 0; i < o.length; i++) {
-            o[i].text = o[i].text + " " + o[i].value;
-            unsetDropDownText(o[i]);
-        }
-    });
+    select.addEventListener('focus', setOptionsClick);
 }
-function unsetDropDownText(opt) {
-    opt.addEventListener('click', (e) => {
-        e.target.closest("select").dispatchEvent(new Event('blur'));
-    });
+function setOptionsClick(e){
+    let t = e.target;
+    let o = t.options;
+    for (let i = 0; i < o.length; i++) {
+        if (o[i].text.length > o[i].getAttribute("orig").length) break;
+        o[i].text = o[i].text + " " + o[i].value;
+    }
+}
+function resetOperatorOptions(t) {
+    let o = t.options;
+    for (let i = 0; i < o.length; i++) {
+        o[i].text = o[i].getAttribute("orig");
+    }
 }
 function setAttributes(el, attrs) {
   for(var key in attrs) {
@@ -521,6 +524,368 @@ if (displayChips) {
         setTimeout(detectFlexWrap(flex), 1000);
     };
 }
+function loadCSS() {
+    let moduleID = "stadium-filter-container";
+    if (!document.getElementById(moduleID)) {
+        let cssMain = document.createElement("style");
+        cssMain.id = moduleID;
+        cssMain.type = "text/css";
+        cssMain.textContent = `/* Stadium CSS */
+.stadium-filter-form-display.stadium-filter-container {
+    margin-top: 1rem;
+
+    .visually-hidden {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+        outline: 0;
+        border: 0;
+        position: absolute;
+        padding: 0;
+    }
+
+    .stadium-filters {
+        border: 0.1rem solid var(--repeater-integrated-filter-border-color, var(--GENERAL-BORDER-COLOR));
+        background-color: var(--filter-background-color, var(--BODY-BACKGROUND-COLOR));
+        display: grid;
+        grid-template-columns: minmax(min-content, max-content) max-content minmax(12rem, 1fr);
+        align-items: center;
+        padding: 0 0.6rem 1rem 0.6rem;
+    }
+
+    .stadium-filter-inner-container {
+        overflow: hidden;
+    }
+
+    input:not([type='checkbox'], [type='radio']) {
+        width: 100%;
+        max-width: 30rem;
+    }
+
+    select.form-control {
+        min-width: 13.5rem;
+        width: 100%;
+    }
+
+    select.form-control[readonly='readonly'] {
+        user-select: none;
+        pointer-events: none;
+        background-color: var(--FORM-CONTROL-BACKGROUND-COLOR, #f9f9f9);
+        background-image: none;
+    }
+
+    .filtergrid-enum-operator > select.form-control,
+    .filtergrid-boolean-operator > select.form-control,
+    .filtergrid-checkbox-list > div {
+        width: auto;
+        max-width: 30rem;
+    }
+    .filtergrid-enum-operator:has(~.drop-down-container) > select.form-control,
+    .drop-down-container ~ .filtergrid-enum-operator > select.form-control,
+    .filtergrid-boolean-operator:has(~.drop-down-container) > select.form-control,
+    .drop-down-container ~ .filtergrid-boolean-operator > select.form-control,
+    .filtergrid-checkbox-list:has(~.drop-down-container) > div,
+    .drop-down-container ~ .filtergrid-checkbox-list > div {
+        width: 100%;
+        max-width: 45rem;
+    }
+
+    .filter-operator {
+        max-width: 13.5rem;
+    }
+
+    .control-container:has(.filtergrid-text-value),
+    .filtergrid-text-value {
+        padding-right: 0;
+    }
+
+    .number-values {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+
+        &>.form-control {
+            width: calc(50% - 0.5rem);
+            max-width: 14.5rem;
+        }
+    }
+
+    .date-values {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+
+        &>.form-control {
+            width: calc(50% - 0.5rem);
+            max-width: 14.5rem;
+        }
+    }
+
+    .filtergrid-checkbox-list,
+    .filtergrid-radiobutton-list {
+        padding: 0.6rem;
+        margin-right: 0;
+    }
+
+    .label-container {
+       overflow-wrap: break-word;
+    }
+
+    .label-container:has(+ .filtergrid-checkbox-list) {
+        align-self: self-start;
+    }
+
+    .filter-button-bar {
+        grid-column: 1 / 3;
+        padding-bottom: 0.6rem;
+        display: flex;
+        > .button-container:nth-child(1) {
+            order: var(--filter-clear-button-position, 1);
+        }
+    }
+    .filtergrid-from-date:has(+ .visually-hidden),
+    .filtergrid-from-number:has(+ .visually-hidden) {
+        width: 100%;
+        max-width: 30rem;
+    }
+
+    .no-display {
+        display: none;
+    }
+    .span-2 {
+        grid-column: 2 / span 2;
+        padding-right: 0;
+    }
+}
+
+.stadium-filter-chips-display.stadium-filter-container {
+    .stadium-filter-inner-container {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    .stadium-filters {
+        border: 0;
+        background-color: transparent;
+        display: inline-flex;
+        row-gap: calc(var(--filter-chips-font-size, 1.1rem) + 0.5rem);
+        column-gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.6rem;
+    }
+    .stadium-filter-chip {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        height: var(--filter-chips-chip-height, 3rem);
+        width: var(--filter-chips-chip-width, 13rem);
+
+        .control-container {
+            padding-right: 0;
+        }
+        .form-control {
+            height: var(--filter-chips-chip-height, 3rem);
+            padding: 0 0 0 var(--filter-chips-chip-left-padding, 0.2rem);
+            color: var(--FORM-CONTROL-FONT-COLOR);
+            background-color: var(--FORM-CONTROL-BACKGROUND-COLOR);
+            border-top: var(--FORM-CONTROL-BORDER-TOP-WIDTH) solid var(--FORM-CONTROL-BORDER-TOP-COLOR);
+            border-right: var(--FORM-CONTROL-BORDER-RIGHT-WIDTH) solid var(--FORM-CONTROL-BORDER-RIGHT-COLOR);
+            border-bottom: var(--FORM-CONTROL-BORDER-BOTTOM-WIDTH) solid var(--FORM-CONTROL-BORDER-BOTTOM-COLOR);
+            border-left: var(--FORM-CONTROL-BORDER-LEFT-WIDTH) solid var(--FORM-CONTROL-BORDER-LEFT-COLOR);
+            border-radius: var(--FORM-CONTROL-BORDER-RADIUS);
+        }
+        .label-container {
+            position: absolute;
+            top: calc((var(--filter-chips-label-font-size, 1.1rem) + 0.1rem) * -1);
+            left: 0;
+            font-size: var(--filter-chips-label-font-size, 1rem);
+            font-style: var(--filter-chips-label-font-style, italic);
+            color: var(--filter-chips-label-font-color, var(--BODY-FONT-COLOR));
+            padding: 0;
+            span {
+                white-space: nowrap;
+            }
+        }
+        .filtergrid-enum-operator select,
+        .filtergrid-boolean-operator select {
+            font-size: var(--filter-chips-font-size, 1.1rem);
+            width: var(--filter-chips-chip-width, 13rem);
+            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 2rem) 0.2rem;
+            border-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+        }
+        .filter-operator {
+            border-top-left-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+            border-bottom-left-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+            font-size: var(--filter-chips-font-size, 1.1rem);
+            width: var(--filter-chips-operators-width, 3rem);
+            background-image: none;
+            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 2rem) 0.2rem;
+            padding: 0 0 0 var(--filter-chips-chip-left-padding, 0.2rem);
+            color: var(--filter-chips-operators-font-color, var(--FORM-CONTROL-FONT-COLOR));
+            text-align: center;
+            border-right: 0.1rem solid var(--DARKER-GREY);
+        }
+        .filter-operator:open {
+            text-align: left;
+        }
+        .text-box-container input {
+            font-size: var(--filter-chips-font-size, 1.1rem);
+            width: calc(var(--filter-chips-chip-width, 13rem) - var(--filter-chips-operators-width, 3rem));
+            padding-left: var(--filter-chips-chip-left-padding, 0.2rem);
+            border-left: 0;
+            border-top-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+            border-bottom-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+        }
+        .date-values,
+        .number-values {
+            display: flex;
+            flex-wrap: nowrap;
+            margin-top: var(--CONTROL-CONTAINER-TOP-MARGIN);
+            input {
+                font-size: var(--filter-chips-font-size, 1.1rem);
+                width: calc((var(--filter-chips-chip-width, 13rem) - var(--filter-chips-operators-width, 3rem)) / 2);
+                border-left: 0;
+                padding-left: var(--filter-chips-chip-left-padding, 0.2rem);
+                border-right: 0.1rem solid var(--DARKER-GREY);
+            }
+            input:has(+ .visually-hidden) {
+                width: calc(var(--filter-chips-chip-width, 13rem) - var(--filter-chips-operators-width, 3rem));
+                border-top-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+                border-bottom-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+                border-right: var(--FORM-CONTROL-BORDER-RIGHT-WIDTH) solid var(--FORM-CONTROL-BORDER-RIGHT-COLOR);
+            }
+            input:last-of-type {
+                border-top-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+                border-bottom-right-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+                border-right: var(--FORM-CONTROL-BORDER-RIGHT-WIDTH) solid var(--FORM-CONTROL-BORDER-RIGHT-COLOR);
+            }
+            .visually-hidden {
+                height: 0;
+                width: 0;
+                overflow: hidden;
+                outline: 0;
+                border: 0;
+                position: absolute;
+                padding: 0;
+            }
+        }
+        .filtergrid-checkbox-list {
+            width: 100%;
+            label {
+                font-size: var(--filter-chips-font-size, 1.1rem);
+            }
+        }
+    }
+
+    .check-box-list-container:has(.stadium-multi-select-checkboxlist) {
+        border: 0;
+        position: relative;
+        margin-top: 0;
+        background: transparent;
+        margin-right: 0;
+
+        &:after {
+            top: 0;
+            right: 0;
+        }
+
+        .stadium-multi-select-checkboxlist {
+            display: none;
+            position: absolute;
+            z-index: 10;
+            top: 3.3rem;
+            left: -0.1rem;
+            border: 0.1rem solid var(--filter-chips-checkbox-list-border-color, var(--GENERAL-BORDER-COLOR));
+            width: 100%;
+            background-color: var(--filter-chips-checkbox-list-background-color, var(--BODY-BACKGROUND-COLOR, #f9f9f9));
+            > div:not(.stadium-multi-select-dropdown-header, .checkbox) {
+                box-shadow: rgba(0, 0, 0, 0.07) 0 0.1rem 0.1rem, rgba(0, 0, 0, 0.07) 0 0.2rem 0.2rem, rgba(0, 0, 0, 0.07) 0 0.4rem 0.4rem, rgba(0, 0, 0, 0.07) 0 0.8rem 0.8rem, rgba(0, 0, 0, 0.07) 0 1.6rem 1.6rem;
+                background-color: var(--multi-select-background-color, var(--CHECK-BOX-LIST-CONTAINER-BACKGROUND-COLOR));
+            }
+        }
+        .stadium-multi-select-dropdown-header {
+            display: flex;
+            align-items: center;
+            height: var(--filter-chips-chip-height, 3rem);
+            width: var(--filter-chips-chip-width, 13rem);
+            cursor: pointer;
+            user-select: none;
+            font-size: var(--filter-chips-font-size, 1.1rem);
+            border-radius: var(--filter-chips-chip-border-radius, 0.5rem);
+            border-top: var(--FORM-CONTROL-BORDER-TOP-WIDTH) solid var(--FORM-CONTROL-BORDER-TOP-COLOR);
+            border-right: var(--FORM-CONTROL-BORDER-RIGHT-WIDTH) solid var(--FORM-CONTROL-BORDER-RIGHT-COLOR);
+            border-bottom: var(--FORM-CONTROL-BORDER-BOTTOM-WIDTH) solid var(--FORM-CONTROL-BORDER-BOTTOM-COLOR);
+            border-left: var(--FORM-CONTROL-BORDER-LEFT-WIDTH) solid var(--FORM-CONTROL-BORDER-LEFT-COLOR);
+            background-color: var(--FORM-CONTROL-BACKGROUND-COLOR);
+            padding: 0 0 0 var(--filter-chips-chip-left-padding, 0.2rem);
+            color: var(--FORM-CONTROL-FONT-COLOR);
+            background-image: linear-gradient(45deg, transparent 50%, var(--DROP-DOWN-FONT-COLOR) 50%), linear-gradient(135deg, var(--DROP-DOWN-FONT-COLOR) 50%, transparent 50%);
+            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 3rem) 0.6rem;
+            background-size: 0.5rem 0.5rem, 0.5rem 0.5rem, 0.1rem 1.8rem;
+            background-repeat: no-repeat;
+        }
+    }
+    .check-box-list-container.expand:has(.stadium-multi-select-checkboxlist) {
+        .stadium-multi-select-checkboxlist {
+            display: block;
+            box-shadow: rgba(0, 0, 0, 0.07) 0 0.1rem 0.1rem, rgba(0, 0, 0, 0.07) 0 0.2rem 0.2rem, rgba(0, 0, 0, 0.07) 0 0.4rem 0.4rem, rgba(0, 0, 0, 0.07) 0 0.8rem 0.8rem, rgba(0, 0, 0, 0.07) 0 1.6rem 1.6rem;
+            .checkbox {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}
+.filter-buttons.row-display {
+    flex-direction: row;
+}
+.filter-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .control-container {
+        margin-top: 0.1rem;
+        padding-right: 0.1rem;
+    }
+    button:is(.btn-default),
+    button:is(.btn-default):hover {
+        font-size: var(--filter-chips-font-size, 1.1rem);
+        padding: 0.2rem 0.6rem;
+    }
+    .apply-button *:is(.btn-default) {
+        background-image: var(--filter-chips-apply-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='%23333333' d='m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z'/%3E%3C/svg%3E"));
+        background-repeat: no-repeat;
+        background-size: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        background-color: transparent;
+        background-position: center;
+        height: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        width: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        box-shadow: none;
+   }
+    .clear-button *:is(.btn-default) {
+        background-image: var(--filter-chips-clear-button-icon, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3C!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --%3E%3Cpath fill='%23333333' d='m12 13.4l-2.917 2.925q-.277.275-.704.275t-.704-.275q-.275-.275-.275-.7t.275-.7L10.6 12L7.675 9.108Q7.4 8.831 7.4 8.404t.275-.704q.275-.275.7-.275t.7.275L12 10.625L14.892 7.7q.277-.275.704-.275t.704.275q.3.3.3.713t-.3.687L13.375 12l2.925 2.917q.275.277.275.704t-.275.704q-.3.3-.712.3t-.688-.3z'/%3E%3C/svg%3E"));
+        background-repeat: no-repeat;
+        background-size: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        background-color: transparent;
+        background-position: center;
+        border-color: transparent;
+        height: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        width: var(--filter-chips-apply-button-icon-size, 2.5rem);
+        box-shadow: none;
+    }
+    .apply-button *:is(.btn-default:hover), 
+    .clear-button *:is(.btn-default:hover) {
+        border: 0.1rem solid var(--BUTTON--BUTTON-BORDER-COLOR);
+    }
+}
+html {
+    min-height: 100%;
+    font-size: 62.5%;
+}`;
+        document.head.appendChild(cssMain);
+    }   
+}
 ```
 
 ### ApplyFilters Script
@@ -536,7 +901,7 @@ if (displayChips) {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -726,7 +1091,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -795,7 +1160,7 @@ function setHeader(c) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.0 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
@@ -930,8 +1295,11 @@ function clearForm() {
 ```
 
 ## Types
+The types can create one nested type manually or use the import option to generate the type. How the type is used remains the same
 
 ### FilterConfig Type Setup (Required)
+
+#### Manual Type Creation
 1. Add a type called "FilterConfig" to the types collection in the Stadium Application Explorer
 2. Add the following properties to the type
    1. type (Any)
@@ -946,15 +1314,55 @@ function clearForm() {
 
 ![Filters ConfigType Setup](images/TypeSetup.png)
 
+#### Type Import
+1. Right-click on the `Types` node in the `Application Explorer`
+
+![](images/TypeImport.png)
+
+2. In the `Import Type` popup
+    1. Add "FilterConfig" into the `Name` input field
+    2. Copy & paste the JSON below into the main input area
+
+```json
+{
+	"type": "",
+	"name": "",
+	"column": "",
+    "format": "",
+    "display": "",
+    "operators": [],
+    "data": []
+}
+```
+
+![](images/TypeImportPopup.png)
+
 ### SelectedFilters Type Setup (Optional)
-1. If you wish to apply filters programatically, it may be useful to create a second type called "SelectedFilters"
-2. Add the following properties to the type
+To apply filters programatically, create a second type called "SelectedFilters"
+
+#### Manual Type Creation
+1. Add a type called "SelectedFilters" to the types collection in the Stadium Application Explorer
+1. Add the following properties to the type
    1. column (Any)
    2. selectedoperator (Any)
    3. selectedvalues (List)
       1. Item (Any)
 
 ![Applied Filters Type](images/AppliedFiltersType.png)
+
+#### Type Import
+1. Right-click on the `Types` node in the `Application Explorer`
+2. In the `Import Type` popup
+    1. Add "SelectedFilters" into the `Name` input field
+    2. Copy & paste the JSON below into the main input area
+
+```json
+{
+    "column":"",
+    "selectedoperator":"",
+    "selectedvalues":[]
+}
+```
 
 ## Page
 1. Drag a *Container* control to the page 
@@ -1006,7 +1414,7 @@ Generating the filtergrid, populating a DataGrid or Repeater with data and stori
 
 Fields Definition Example
 ```json
-= [{
+[{
 	"type": "text",
 	"name": "First Name",
 	"column": "FirstName",
@@ -1079,7 +1487,7 @@ ApplyFilters Example Output
 ```json
 {
    "data": [
-         {"ID":3,"FirstName":"Wayne","LastName":"Andrews","NoOfChildren":5,"NoOfPets":6,"StartDate":"2022-12-18T00:00:00","EndDate":"2024-03-25T08:00:00","Healthy":true,"Happy":true,"Subscription":"Subscribed"}
+        {"ID":3,"FirstName":"Wayne","LastName":"Andrews","NoOfChildren":5,"NoOfPets":6,"StartDate":"2022-12-18T00:00:00","EndDate":"2024-03-25T08:00:00","Healthy":true,"Happy":true,"Subscription":"Subscribed"}
    ],
    "filters":[
       {"column":"ID","selectedoperator":"From-To","selectedvalues":["1","20"]},
