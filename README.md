@@ -53,8 +53,6 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 3. [Display Options](#display-options)
    1. [Integrated Button Display](#integrated-button-display)
 4. [CSS](#css)
-   1. [Before v6.12](#before-v612)
-   2. [Customising CSS](#customising-css)
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
@@ -1574,17 +1572,8 @@ To achieve this, place the two button controls into the FilterGrid container con
 ![](images/ButtonControls.png)
 
 # CSS
-The CSS below is required for the correct functioning of the module. Variables exposed in the [*filter-grid-variables.css*](filter-grid-variables.css) file can be [customised](#customising-css).
+Variables exposed in the [*filter-grid-variables.css*](filter-grid-variables.css) file can be [customised](#customising-css).
 
-## Before v6.12
-1. Create a folder called "CSS" inside of your Embedded Files in your application
-2. Drag the two CSS files from this repo [*filter-grid-variables.css*](filter-grid-variables.css) and [*filter-grid.css*](filter-grid.css) into that folder
-3. Paste the link tags below into the *head* property of your application
-```html
-<link rel="stylesheet" href="{EmbeddedFiles}/CSS/filter-grid-variables.css">
-``` 
-
-## Customising CSS
 1. Open the CSS file called [*filter-grid-variables.css*](filter-grid-variables.css) from this repo
 2. Adjust the variables in the *:root* element as you see fit
 3. Stadium 6.12+ users can comment out any variable they do **not** want to customise
