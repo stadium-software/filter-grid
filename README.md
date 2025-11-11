@@ -56,12 +56,14 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.2
+2.3
 
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
 
 2.2 Added icon color variable to [*filter-grid-variables.css*](filter-grid-variables.css)
+
+2.3 Added the datatype to output of the 'ApplyFilters' script. No application changes are necessary as the output will just be an additional property. 
 
 # Setup
 
@@ -85,7 +87,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
@@ -902,7 +904,7 @@ html {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -943,7 +945,7 @@ function filterRepeaterData(){
                 } else if (txtoperator.toLowerCase() == "does not equal") {
                     returnData = notequals(returnData, foperator, txtvalue);
                 }
-                arrReturn.push({ "column": foperator, "selectedoperator": txtoperator, selectedvalues: [txtvalue] });
+                arrReturn.push({ "column": foperator, "selectedoperator": txtoperator, selectedvalues: [txtvalue], datatype: "text" });
             }
         }
         if (ftype == "number") {
@@ -968,7 +970,7 @@ function filterRepeaterData(){
                 } else if (numoperator.toLowerCase() == "smaller than") {
                     returnData = smallerNumbers(returnData, foperator, numvaluefrom);
                 }
-                arrReturn.push({"column": foperator, "selectedoperator":numoperator, selectedvalues: [numvaluefrom, numvalueto]});
+                arrReturn.push({"column": foperator, "selectedoperator":numoperator, selectedvalues: [numvaluefrom, numvalueto], datatype: "number"});
             }
         }
         if (ftype == "date") {
@@ -999,7 +1001,7 @@ function filterRepeaterData(){
                 } else if (dtoperator.toLowerCase() == "smaller than") {
                     returnData = smallerDates(returnData, foperator, dtvaluefrom, format);
                 }
-                arrReturn.push({"column": foperator, "selectedoperator":dtoperator, selectedvalues: [dtvaluefrom, dtvalueto]});
+                arrReturn.push({"column": foperator, "selectedoperator":dtoperator, selectedvalues: [dtvaluefrom, dtvalueto], datatype: "date"});
             }
         }
         let selectedvals = [];
@@ -1016,6 +1018,7 @@ function filterRepeaterData(){
                 selectedvals.push(multioperator.value);
             }
         }
+        if (ftype == "boolean" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: selectedvals, datatype: "boolean" });
         if (ftype == "enum" && fdisplay == "radio") {
             let multioperator = operatorEls[i].querySelector("input[type='radio']:checked");
             if (multioperator.value != "Show all") {
@@ -1029,6 +1032,7 @@ function filterRepeaterData(){
                 selectedvals.push(enumoperator);
             }
         }
+        if (ftype == "enum" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: selectedvals, datatype: "enum" });
         if (ftype == "multiselect") {
             let multioperator = operatorEls[i].querySelectorAll("input[type='checkbox']:checked");
             for (let s = 0; s < multioperator.length; s++) {
@@ -1036,7 +1040,7 @@ function filterRepeaterData(){
             }
             if (multioperator.length > 0) returnData = inArray(returnData, foperator, selectedvals);
         }
-        if (selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: selectedvals });
+        if (ftype == "multiselect" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: ["'" + selectedvals.join("','") + "'"], datatype: "multiselect" });
     }
     filterContainer.classList.remove("expand");
     return {data: returnData, filters: arrReturn};
@@ -1092,7 +1096,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -1161,7 +1165,7 @@ function setHeader(c) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
