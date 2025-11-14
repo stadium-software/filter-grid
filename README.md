@@ -1043,7 +1043,7 @@ function filterRepeaterData(){
             }
             if (multioperator.length > 0) returnData = inArray(returnData, foperator, selectedvals);
         }
-        if (ftype == "multiselect" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: [selectedvals], datatype: "multiselect" });
+        if (ftype == "multiselect" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: selectedvals, datatype: "multiselect" });
     }
     filterContainer.classList.remove("expand");
     return {data: returnData, filters: arrReturn};
