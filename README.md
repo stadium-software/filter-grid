@@ -31,14 +31,14 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 2. [Setup](#setup)
    1. [Application](#application)
    2. [Global Scripts](#global-scripts)
-      1. [GenerateFilters Script](#generatefilters-script)
-      2. [ApplyFilters Script](#applyfilters-script)
-      3. [ClearFilters Script](#clearfilters-script)
-      4. [SetFilters Script](#setfilters-script)
+      1. [FiltersGenerate Script](#filtersgenerate-script)
+      2. [FiltersApply Script](#filtersapply-script)
+      3. [FiltersClear Script](#filtersclear-script)
+      4. [FiltersSet Script](#filtersset-script)
    3. [Types](#types)
       1. [FilterConfig Type Setup (Required)](#filterconfig-type-setup-required)
-         1. [Manual Type Creation](#manual-type-creation)
-         2. [Type Import](#type-import)
+         1. [Type Import](#type-import)
+         2. [Manual Type Creation](#manual-type-creation)
       2. [SelectedFilters Type Setup (Optional)](#selectedfilters-type-setup-optional)
          1. [Manual Type Creation](#manual-type-creation-1)
          2. [Type Import](#type-import-1)
@@ -56,14 +56,16 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.3
+2.3.1
 
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
 
 2.2 Added icon color variable to [*filter-grid-variables.css*](filter-grid-variables.css)
 
-2.3 Added the datatype to output of the 'ApplyFilters' script. No application changes are necessary as the output will just be an additional property. 
+2.3 Added the datatype to output of the 'FiltersApply' script. No application changes are necessary as the output will just be an additional property. 
+
+2.3.1 Fixed multiselect bug; changed script names to group them in the Global Scripts
 
 # Setup
 
@@ -73,13 +75,13 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 ## Global Scripts
 This module requires the creation of four separate scripts. Each of these can be called separately, providing for flexibility in implementation. 
 
-1. [GenerateFilters](#generatefilters-script): Generates the filtergrid from the configuration
-2. [ApplyFilters](#applyfilters-script): Parses the filtergrid and applies the filters to a dataset
-3. [ClearFilters](#clearfilters-script): Resets the filtergrid
-4. [SetFilters](#setfilters-script): Populates a filtergrid with filter values from a set of saved filters
+1. [FiltersGenerate](#filtersgenerate-script): Generates the filtergrid from the configuration
+2. [FiltersApply](#filtersapply-script): Parses the filtergrid and applies the filters to a dataset
+3. [FiltersClear](#filtersclear-script): Resets the filtergrid
+4. [FiltersSet](#filtersset-script): Populates a filtergrid with filter values from a set of saved filters
 
-### GenerateFilters Script
-1. Create a Global Script called "GenerateFilters"
+### FiltersGenerate Script
+1. Create a Global Script called "FiltersGenerate"
 2. Add the input parameters below to the Global Script
    1. FilterConfig
    2. FilterContainerClass
@@ -87,7 +89,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
@@ -552,110 +554,111 @@ function loadCSS() {
         grid-template-columns: minmax(min-content, max-content) max-content minmax(12rem, 1fr);
         align-items: center;
         padding: 0 0.6rem 1rem 0.6rem;
-    }
 
-    .stadium-filter-inner-container {
-        overflow: hidden;
-    }
-
-    input:not([type='checkbox'], [type='radio']) {
-        width: 100%;
-        max-width: 30rem;
-    }
-
-    select.form-control {
-        min-width: 13.5rem;
-        width: 100%;
-    }
-
-    select.form-control[readonly='readonly'] {
-        user-select: none;
-        pointer-events: none;
-        background-color: var(--FORM-CONTROL-BACKGROUND-COLOR, #f9f9f9);
-        background-image: none;
-    }
-
-    .filtergrid-enum-operator > select.form-control,
-    .filtergrid-boolean-operator > select.form-control,
-    .filtergrid-checkbox-list > div {
-        width: auto;
-        max-width: 30rem;
-    }
-    .filtergrid-enum-operator:has(~.drop-down-container) > select.form-control,
-    .drop-down-container ~ .filtergrid-enum-operator > select.form-control,
-    .filtergrid-boolean-operator:has(~.drop-down-container) > select.form-control,
-    .drop-down-container ~ .filtergrid-boolean-operator > select.form-control,
-    .filtergrid-checkbox-list:has(~.drop-down-container) > div,
-    .drop-down-container ~ .filtergrid-checkbox-list > div {
-        width: 100%;
-        max-width: 45rem;
-    }
-
-    .filter-operator {
-        max-width: 13.5rem;
-    }
-
-    .control-container:has(.filtergrid-text-value),
-    .filtergrid-text-value {
-        padding-right: 0;
-    }
-
-    .number-values {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-
-        &>.form-control {
-            width: calc(50% - 0.5rem);
-            max-width: 14.5rem;
+        .stadium-filter-inner-container {
+            overflow: hidden;
         }
-    }
 
-    .date-values {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-
-        &>.form-control {
-            width: calc(50% - 0.5rem);
-            max-width: 14.5rem;
+        input:not([type='checkbox'], [type='radio']) {
+            width: 100%;
+            max-width: 30rem;
         }
-    }
 
-    .filtergrid-checkbox-list,
-    .filtergrid-radiobutton-list {
-        padding: 0.6rem;
-        margin-right: 0;
-    }
-
-    .label-container {
-       overflow-wrap: break-word;
-    }
-
-    .label-container:has(+ .filtergrid-checkbox-list) {
-        align-self: self-start;
-    }
-
-    .filter-button-bar {
-        grid-column: 1 / 3;
-        padding-bottom: 0.6rem;
-        display: flex;
-        > .button-container:nth-child(1) {
-            order: var(--filter-clear-button-position, 1);
+        select.form-control, 
+        .filter-operator {
+            min-width: 13.5rem;
+            width: 100%;
         }
-    }
-    .filtergrid-from-date:has(+ .visually-hidden),
-    .filtergrid-from-number:has(+ .visually-hidden) {
-        width: 100%;
-        max-width: 30rem;
-    }
 
-    .no-display {
-        display: none;
-    }
-    .span-2 {
-        grid-column: 2 / span 2;
-        padding-right: 0;
+        select.form-control[readonly='readonly'] {
+            user-select: none;
+            pointer-events: none;
+            background-color: var(--FORM-CONTROL-BACKGROUND-COLOR, #f9f9f9);
+            background-image: none;
+        }
+
+        .filtergrid-enum-operator > select.form-control,
+        .filtergrid-boolean-operator > select.form-control,
+        .filtergrid-checkbox-list > div {
+            width: auto;
+            max-width: 30rem;
+        }
+        .filtergrid-enum-operator:has(~.drop-down-container) > select.form-control,
+        .drop-down-container ~ .filtergrid-enum-operator > select.form-control,
+        .filtergrid-boolean-operator:has(~.drop-down-container) > select.form-control,
+        .drop-down-container ~ .filtergrid-boolean-operator > select.form-control,
+        .filtergrid-checkbox-list:has(~.drop-down-container) > div,
+        .drop-down-container ~ .filtergrid-checkbox-list > div {
+            width: 100%;
+            max-width: 45rem;
+        }
+
+        .filter-operator {
+            max-width: 13.5rem;
+        }
+
+        .control-container:has(.filtergrid-text-value),
+        .filtergrid-text-value {
+            padding-right: 0;
+        }
+
+        .number-values {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+
+            &>.form-control {
+                width: calc(50% - 0.5rem);
+                max-width: 14.5rem;
+            }
+        }
+
+        .date-values {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+
+            &>.form-control {
+                width: calc(50% - 0.5rem);
+                max-width: 14.5rem;
+            }
+        }
+
+        .filtergrid-checkbox-list,
+        .filtergrid-radiobutton-list {
+            padding: 0.6rem;
+            margin-right: 0;
+        }
+
+        .label-container {
+        overflow-wrap: break-word;
+        }
+
+        .label-container:has(+ .filtergrid-checkbox-list) {
+            align-self: self-start;
+        }
+
+        .filter-button-bar {
+            grid-column: 1 / 3;
+            padding-bottom: 0.6rem;
+            display: flex;
+            > .button-container:nth-child(1) {
+                order: var(--filter-clear-button-position, 1);
+            }
+        }
+        .filtergrid-from-date:has(+ .visually-hidden),
+        .filtergrid-from-number:has(+ .visually-hidden) {
+            width: 100%;
+            max-width: 30rem;
+        }
+
+        .no-display {
+            display: none;
+        }
+        .span-2 {
+            grid-column: 2 / span 2;
+            padding-right: 0;
+        }
     }
 }
 
@@ -891,8 +894,8 @@ html {
 }
 ```
 
-### ApplyFilters Script
-1. Create a Global Script called "ApplyFilters"
+### FiltersApply Script
+1. Create a Global Script called "FiltersApply"
 2. Add the input parameters below to the Global Script
    1. Data
    2. FilterContainerClass
@@ -904,7 +907,7 @@ html {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -1040,7 +1043,7 @@ function filterRepeaterData(){
             }
             if (multioperator.length > 0) returnData = inArray(returnData, foperator, selectedvals);
         }
-        if (ftype == "multiselect" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: ["'" + selectedvals.join("','") + "'"], datatype: "multiselect" });
+        if (ftype == "multiselect" && selectedvals.length > 0) arrReturn.push({ "column": foperator, selectedvalues: [selectedvals], datatype: "multiselect" });
     }
     filterContainer.classList.remove("expand");
     return {data: returnData, filters: arrReturn};
@@ -1089,14 +1092,14 @@ function equalsDate(d, o, v, f) {
 }
 ```
 
-### ClearFilters Script
-1. Create a Global Script called "ClearFilters"
+### FiltersClear Script
+1. Create a Global Script called "FiltersClear"
 2. Add the input parameters below to the Global Script
    1. FilterContainerClass
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -1157,15 +1160,15 @@ function setHeader(c) {
 }
 ```
 
-### SetFilters Script
-1. Create a Global Script called "SetFilters"
+### FiltersSet Script
+1. Create a Global Script called "FiltersSet"
 2. Add the input parameters below to the Global Script
    1. FilterContainerClass
    2. SelectedFilters
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
@@ -1307,19 +1310,6 @@ The completed type should have the structure shown below
 
 ![Filters ConfigType Setup](images/TypeSetup.png)
 
-#### Manual Type Creation
-1. Add a type called "FilterConfig" to the types collection in the Stadium Application Explorer
-2. Add the following properties to the type
-   1. type (Any)
-   2. name (Any)
-   3. column (Any)
-   4. display (Any)
-   5. data (List)
-      1. Item (Any)
-   6. format (Any)
-   7. operators (List)
-      1. Item (Any)
-
 #### Type Import
 1. Right-click on the `Types` node in the `Application Explorer`
 
@@ -1342,6 +1332,19 @@ The completed type should have the structure shown below
 ```
 
 ![](images/TypeImportPopup.png)
+
+#### Manual Type Creation
+1. Add a type called "FilterConfig" to the types collection in the Stadium Application Explorer
+2. Add the following properties to the type
+   1. type (Any)
+   2. name (Any)
+   3. column (Any)
+   4. display (Any)
+   5. data (List)
+      1. Item (Any)
+   6. format (Any)
+   7. operators (List)
+      1. Item (Any)
 
 ### SelectedFilters Type Setup (Optional)
 To apply filters programatically, create a second type called "SelectedFilters"
@@ -1467,7 +1470,7 @@ Fields Definition Example
 	"data": ["No data","Subscribed","Unsubscribed"]
 }]
 ``` 
-6. Drag the "GenerateFilters" global script to the event handler and provide parameter values
+6. Drag the "FiltersGenerate" global script to the event handler and provide parameter values
    1. FilterConfig: The *FilterConfig* List defining the filter fields
    2. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    3. Display: Optionally set to "chips" to display the filtergrid as a chips display (default is form)
@@ -1482,14 +1485,14 @@ Applying filters to the full dataset and populating a DataGrid or Repeater with 
 
 ![](images/FilterApplyListInput.png)
 
-5. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
+5. Drag the "FiltersApply" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: The *List* containing the data (don't assign the *Label.text* directly)
-6. The "ApplyFilters" global script outputs an objet with two properties
+6. The "FiltersApply" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
 
-ApplyFilters Example Output
+FiltersApply Example Output
 ```json
 {
    "data": [
@@ -1506,14 +1509,14 @@ ApplyFilters Example Output
 
 7. Drag a *SetValue* action to the event handler
    1. Target: The DataGrid.Data or the Repeater.List property
-   2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (~.ApplyFilters.Data.data)
+   2. Source: Select the FiltersApply.Data output from the FiltersApply script and add .data to the output to get only the List containing the filtered dataset (~.FiltersApply.Data.data)
 
 ![Apply Button Event Handler](images/ApplyEventHandler.png)
 
 ### Clear Filters Button Click
 Clearing all user-set values from a filtergrid
 
-1. Drag the "ClearFilters" script to the event handler and provide a parameter value
+1. Drag the "FiltersClear" script to the event handler and provide a parameter value
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
 2. Drag a *Variable* into the event handler
 3. Assign the *Label.Text* property to the Variable *Value* property
@@ -1529,10 +1532,10 @@ Clearing all user-set values from a filtergrid
 Saving user-defined filter criteria and applying it to a filtergrid at a later time
 
 ### Saving Filters
-1. The "ApplyFilters" global script returns an object containing a List of applied filters (*~.ApplyFilters.Data.filters*)
+1. The "FiltersApply" global script returns an object containing a List of applied filters (*~.FiltersApply.Data.filters*)
 2. Store this list temporarily in a hidden label on the page or in a session variable, or more permanently in a cookie or database
 
-ApplyFilters Example Output
+FiltersApply Example Output
 ```json
 {
    "data": [
@@ -1548,21 +1551,21 @@ ApplyFilters Example Output
 ```
 
 ### Applying Saved Filters
-1. Drag the "SetFilters" global script to an event handler or script and provide parameter values
+1. Drag the "FiltersSet" global script to an event handler or script and provide parameter values
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. SelectedFilters: Provide a List containing saved filters ([see saved filters](#saving-filters))
-2. Drag the "ApplyFilters" global script to the event handler and complete the input parameters
+2. Drag the "FiltersApply" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: A *List* containing the *full* dataset
 3. Drag a *SetValue* to the event handler or script
    1. Target: The DataGrid.Data or the Repeater.List property
-   2. Source: Select the ApplyFilters.Data output from the ApplyFilters script and add .data to the output to get only the List containing the filtered dataset (*~.ApplyFilters.Data.data*)
+   2. Source: Select the FiltersApply.Data output from the FiltersApply script and add .data to the output to get only the List containing the filtered dataset (*~.FiltersApply.Data.data*)
 
 ![Apply Saved Filters](images/ApplySaved.png)
 
 # Display Options
 1. Allowing users to collaps and expand filtergrids can be achieved by using the [Collapse Controls](https://github.com/stadium-software/collapse-controls) module
-2. The filtergrid can be displayed as a chips display by setting the *Display* property to "chips" in the *GenerateFilters* global script
+2. The filtergrid can be displayed as a chips display by setting the *Display* property to "chips" in the *FiltersGenerate* global script
 
 ![Collapsible Controls](images/CollapsibleControls.png)
 
