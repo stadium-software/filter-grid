@@ -2,7 +2,9 @@
 
 A module to generate sets of filters and to filter JSON arrays. This module can be used in connection with any JSON dataset. 
 
-IMPORTANT UPGRADE NOTICE: If you are upgrading from version 1.x to 2.x make sure you remove the `filter-grid.css` file from your embedded files and delete the reference in the application `Head` property from your application! 
+**IMPORTANT UPGRADE NOTICE**
+
+If you are upgrading from version 1.x to 2.x make sure you remove the `filter-grid.css` file from your embedded files and delete the reference in the application `Head` property from your application! 
 
 Four separate functions are provided:
 
