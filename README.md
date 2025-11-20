@@ -2,6 +2,8 @@
 
 A module to generate sets of filters and to filter JSON arrays. This module can be used in connection with any JSON dataset. 
 
+IMPORTANT UPGRADE NOTICE: If you are upgrading from version 1.x to 2.x make sure you remove the `filter-grid.css` file from your embedded files and delete the reference in the application `Head` property from your application! 
+
 Four separate functions are provided:
 
 1. Generating filters grids
@@ -56,7 +58,7 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.3.1
+2.3.2
 
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
@@ -66,6 +68,8 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 2.3 Added the datatype to output of the 'FiltersApply' script. No application changes are necessary as the output will just be an additional property. 
 
 2.3.1 Fixed multiselect bug; changed script names to group them in the Global Scripts
+
+2.3.2 Changed chip layout CSS to fix display bugs (chip display only)
 
 # Setup
 
@@ -89,7 +93,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
@@ -153,7 +157,8 @@ let stadiumFilters = document.createElement("div");
 stadiumFilters.classList.add("stadium-filters");
 filterInnerContainer.appendChild(stadiumFilters);
 let control = filterContainer.querySelectorAll(".control-container");
-if (control.length > 0 && !filterContainer.querySelector(".filter-buttons") && displayChips) {
+let filterButtonContainer = filterContainer.querySelector(".filter-buttons");
+if (control.length > 0 && !filterButtonContainer && displayChips) {
     let filterButtons = document.createElement("div");
     filterButtons.classList.add("filter-buttons");
     for (let i = 0; i < control.length; i++) {
@@ -168,7 +173,7 @@ if (control.length > 0 && !filterContainer.querySelector(".filter-buttons") && d
         filterButtons.appendChild(control[i]);
     }
     filterInnerContainer.prepend(filterButtons);
-} else if (control.length > 0) {
+} else if (control.length > 0 && !displayChips) {
     let stackLayout = document.createElement("div");
     stackLayout.classList.add("stack-layout-container");
     for (let i = 0; i < control.length; i++) {
@@ -654,6 +659,7 @@ function loadCSS() {
 
         .no-display {
             display: none;
+            width: 0;
         }
         .span-2 {
             grid-column: 2 / span 2;
@@ -675,16 +681,31 @@ function loadCSS() {
         column-gap: 1rem;
         flex-wrap: wrap;
         padding: 0.6rem;
+        .no-display {
+            width: 0;
+        }
     }
     .stadium-filter-chip {
-        display: flex;
-        flex-wrap: nowrap;
-        position: relative;
-        height: var(--filter-chips-chip-height, 3rem);
         width: var(--filter-chips-chip-width, 13rem);
+        display: grid;
+        grid-template-columns: var(--filter-chips-operators-width, 3rem) minmax(0, auto);
+        grid-template-rows: auto;
+        grid-template-areas: 
+            "fieldlabel fieldlabel"
+            "operatorelement captureelement";
 
+        .label-container {
+            grid-area: fieldlabel;
+        }
+        .control-container:has(.filter-operator) {
+            grid-area: operatorelement;
+        }
+        .control-container[fvalue] {
+            grid-area: captureelement;
+        }
         .control-container {
             padding-right: 0;
+            margin-top: 0;
         }
         .form-control {
             height: var(--filter-chips-chip-height, 3rem);
@@ -698,9 +719,6 @@ function loadCSS() {
             border-radius: var(--FORM-CONTROL-BORDER-RADIUS);
         }
         .label-container {
-            position: absolute;
-            top: calc((var(--filter-chips-label-font-size, 1.1rem) + 0.1rem) * -1);
-            left: 0;
             font-size: var(--filter-chips-label-font-size, 1rem);
             font-style: var(--filter-chips-label-font-style, italic);
             color: var(--filter-chips-label-font-color, var(--BODY-FONT-COLOR));
@@ -713,7 +731,7 @@ function loadCSS() {
         .filtergrid-boolean-operator select {
             font-size: var(--filter-chips-font-size, 1.1rem);
             width: var(--filter-chips-chip-width, 13rem);
-            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 2rem) 0.2rem;
+            /*background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 2rem) 0.2rem;*/
             border-radius: var(--filter-chips-chip-border-radius, 0.5rem);
         }
         .filter-operator {
@@ -722,7 +740,6 @@ function loadCSS() {
             font-size: var(--filter-chips-font-size, 1.1rem);
             width: var(--filter-chips-operators-width, 3rem);
             background-image: none;
-            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 2rem) 0.2rem;
             padding: 0 0 0 var(--filter-chips-chip-left-padding, 0.2rem);
             color: var(--filter-chips-operators-font-color, var(--FORM-CONTROL-FONT-COLOR));
             text-align: center;
@@ -743,7 +760,6 @@ function loadCSS() {
         .number-values {
             display: flex;
             flex-wrap: nowrap;
-            margin-top: var(--CONTROL-CONTAINER-TOP-MARGIN);
             input {
                 font-size: var(--filter-chips-font-size, 1.1rem);
                 width: calc((var(--filter-chips-chip-width, 13rem) - var(--filter-chips-operators-width, 3rem)) / 2);
@@ -781,6 +797,8 @@ function loadCSS() {
     }
 
     .check-box-list-container:has(.stadium-multi-select-checkboxlist) {
+        grid-column: 1 / span 2;
+        padding-right: 0;
         border: 0;
         position: relative;
         margin-top: 0;
@@ -823,7 +841,7 @@ function loadCSS() {
             padding: 0 0 0 var(--filter-chips-chip-left-padding, 0.2rem);
             color: var(--FORM-CONTROL-FONT-COLOR);
             background-image: linear-gradient(45deg, transparent 50%, var(--DROP-DOWN-FONT-COLOR) 50%), linear-gradient(135deg, var(--DROP-DOWN-FONT-COLOR) 50%, transparent 50%);
-            background-position: calc(100% - 1rem) 0.8rem, calc(100% - 0.5rem) 0.8rem, calc(100% - 3rem) 0.6rem;
+            background-position: calc(100% - 2rem) 1.4rem, calc(100% - 1.5rem) 1.4rem, calc(100% - 3rem) 0.6rem;
             background-size: 0.5rem 0.5rem, 0.5rem 0.5rem, 0.1rem 1.8rem;
             background-repeat: no-repeat;
         }
@@ -907,7 +925,7 @@ html {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
 if (!Array.isArray(data)) {
@@ -1099,7 +1117,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -1168,7 +1186,7 @@ function setHeader(c) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.1 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
