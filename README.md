@@ -62,7 +62,7 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 5. [Upgrading Stadium Repos](#upgrading-stadium-repos)
 
 # Version
-2.3.2
+2.4
 
 ## Change Log
 2.1 Integrated CSS into script and removed the requirement to include CSS files in the embedded files
@@ -74,6 +74,8 @@ If you are using this module in connection with a [Client-Side Repeater DataGrid
 2.3.1 Fixed multiselect bug; changed script names to group them in the Global Scripts
 
 2.3.2 Changed chip layout CSS to fix display bugs (chip display only)
+
+2.4 Fixed null values bug; added case sensitivity flag (optional)
 
 # Setup
 
@@ -97,7 +99,7 @@ This module requires the creation of four separate scripts. Each of these can be
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.4 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let filterConfig = ~.Parameters.Input.FilterConfig;
 let filtersDisplay = ~.Parameters.Input.Display || "form";
@@ -921,6 +923,7 @@ html {
 2. Add the input parameters below to the Global Script
    1. Data
    2. FilterContainerClass
+   3. CaseSensitive
 3. Add the output parameters below to the Global Script
    1. Data
 4. Drag a *JavaScript* action into the script
@@ -929,9 +932,11 @@ html {
    1. Target: ~.Parameters.Output.Data
    2. Source: ~.JavaScript
 ```javascript
-/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.4 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let data = ~.Parameters.Input.Data || [];
+let caseSensitiveParam = ~.Parameters.Input.CaseSensitive;
+let isCaseSensitive = isEmpty(caseSensitiveParam) ? true : toBool(caseSensitiveParam);
 if (!Array.isArray(data)) {
     console.error("The *Data* parameter must be a List or Array.");
     return false;
@@ -962,13 +967,13 @@ function filterRepeaterData(){
             let txtvalue = fvalueEl.querySelector("input").value;
             if (txtvalue) {
                 if (txtoperator.toLowerCase() == "contains") {
-                    returnData = contains(returnData, foperator, txtvalue);
+                    returnData = contains(returnData, foperator, txtvalue, isCaseSensitive);
                 } else if (txtoperator.toLowerCase() == "does not contain") {
-                    returnData = notcontains(returnData, foperator, txtvalue);
+                    returnData = notcontains(returnData, foperator, txtvalue, isCaseSensitive);
                 } else if (txtoperator.toLowerCase() == "equals") {
-                    returnData = equals(returnData, foperator, txtvalue);
+                    returnData = equals(returnData, foperator, txtvalue, isCaseSensitive);
                 } else if (txtoperator.toLowerCase() == "does not equal") {
-                    returnData = notequals(returnData, foperator, txtvalue);
+                    returnData = notequals(returnData, foperator, txtvalue, isCaseSensitive);
                 }
                 arrReturn.push({ "column": foperator, "selectedoperator": txtoperator, selectedvalues: [txtvalue], datatype: "text" });
             }
@@ -980,7 +985,6 @@ function filterRepeaterData(){
             let numvaluefrom = numvaluefromEl.value;
             let numvalueto = numvaluetoEl.value;
             if (numvaluefrom) {
-                if (!numvaluefrom) numvaluefrom = -9007199254740991;
                 if (!numvalueto) numvalueto = 9007199254740991;
                 numvaluefromEl.value = numvaluefrom;
                 numvaluetoEl.value = numvalueto;
@@ -989,7 +993,7 @@ function filterRepeaterData(){
                 } else if (numoperator.toLowerCase() == "from-to") {
                     returnData = fromtoNumbers(returnData, foperator, numvaluefrom, numvalueto);
                 } else if (numoperator.toLowerCase() == "equals") {
-                    returnData = equals(returnData, foperator, numvaluefrom);
+                    returnData = equalsNumber(returnData, foperator, numvaluefrom);
                 } else if (numoperator.toLowerCase() == "greater than") {
                     returnData = greaterNumbers(returnData, foperator, numvaluefrom);
                 } else if (numoperator.toLowerCase() == "smaller than") {
@@ -1070,47 +1074,90 @@ function filterRepeaterData(){
     filterContainer.classList.remove("expand");
     return {data: returnData, filters: arrReturn};
 }
-function contains(d, f, v) {
-    return d.filter(el => el[f].indexOf(v) > -1 && el[f] !== undefined);
+function isEmpty(x) { return x === undefined || x === null || x === ""; }
+function norm(x, cs) {
+    let s = (Array.isArray(x) ? x.join(", ") : String(x)).trim();
+    return cs ? s : s.toLowerCase();
 }
-function notcontains(d, f, v) {
-    return d.filter(el => el[f] === undefined || el[f].indexOf(v) == -1);
+function toNum(x) {
+    if (typeof x === "number") return x;
+    if (typeof x === "boolean" || isEmpty(x)) return NaN;
+    return Number(String(x).trim());
 }
-function equals(d, f, v) {
-    return d.filter(el => el[f] == v && el[f] !== undefined);
+function toBool(x) { return /^(true|yes|1)$/i.test(String(x).trim()); }
+function toDate(x, f) {
+    if (isEmpty(x)) return null;
+    let dt = (typeof x === "string" && f) ? dayjs(x, f, true) : dayjs(x);
+    if (!dt.isValid()) dt = dayjs(x);
+    return dt.isValid() ? dt.startOf("day") : null;
 }
-function notequals(d, f, v) {
-    return d.filter(el => el[f] === undefined || el[f] != v);
+function sameValue(a, b, cs) {
+    if (Array.isArray(a)) return a.some(x => sameValue(x, b, cs));
+    if (typeof b === "boolean") return toBool(a) === b;
+    return norm(a, cs) === norm(b, cs);
+}
+function contains(d, f, v, cs) {
+    //return d.filter(el => el[f] !== null && el[f] !== undefined && String(el[f]).indexOf(v) > -1);
+    return d.filter(el => !isEmpty(el[f]) && norm(el[f], cs).includes(norm(v, cs)));
+}
+function notcontains(d, f, v, cs) {
+    return d.filter(el => isEmpty(el[f]) || !norm(el[f], cs).includes(norm(v, cs)));
+}
+function equals(d, f, v, cs) {
+    return d.filter(el => !isEmpty(el[f]) && sameValue(el[f], v, cs));
+}
+function notequals(d, f, v, cs) {
+    return d.filter(el => isEmpty(el[f]) || !sameValue(el[f], v, cs));
+}
+function numFilter(d, f, test) {
+    return d.filter(el => { let n = toNum(el[f]); return !isNaN(n) && test(n); });
+}
+function equalsNumber(d, f, v) {
+    v = toNum(v);
+    return numFilter(d, f, n => n === v);
 }
 function betweenNumbers(d, f, v1, v2) {
-    return d.filter(el => el[f] > v1 && el[f] < v2 && el[f] !== undefined);
+    v1 = toNum(v1); v2 = toNum(v2);
+    return numFilter(d, f, n => n > v1 && n < v2);
 }
 function fromtoNumbers(d, f, v1, v2) {
-    return d.filter(el => el[f] >= v1 && el[f] <= v2 && el[f] !== undefined);
+    v1 = toNum(v1); v2 = toNum(v2);
+    return numFilter(d, f, n => n >= v1 && n <= v2);
 }
 function greaterNumbers(d, f, v) {
-    return d.filter(el => el[f] > v && el[f] !== undefined);
+    v = toNum(v);
+    return numFilter(d, f, n => n > v);
 }
 function smallerNumbers(d, f, v) {
-    return d.filter(el => el[f] < v && el[f] !== undefined);
+    v = toNum(v);
+    return numFilter(d, f, n => n < v);
 }
-function inArray(d,f,a) { 
-    return d.filter(el => a.includes(el[f]) && el[f] !== undefined);
+function inArray(d, f, a) {
+    let wanted = a.map(x => norm(x));
+    return d.filter(el => !isEmpty(el[f]) && [].concat(el[f]).some(x => wanted.includes(norm(x))));
+}
+function dateFilter(d, o, f, test) {
+    return d.filter(el => { let dt = toDate(el[o], f); return dt !== null && test(dt); });
 }
 function betweenDates(d, o, v1, v2, f) {
-    return d.filter(el => dayjs(el[o]).format(f) > dayjs(v1).format(f) && dayjs(el[o]).format(f) < dayjs(v2).format(f) && el[o] !== undefined);
+    let a = toDate(v1, f), b = toDate(v2, f);
+    return dateFilter(d, o, f, dt => dt.isAfter(a) && dt.isBefore(b));
 }
 function fromtoDates(d, o, v1, v2, f) {
-    return d.filter(el => dayjs(el[o]).format(f) > dayjs(v1).add(-1, 'day').format(f) && dayjs(el[o]).format(f) < dayjs(v2).add(+1, 'day').format(f) && el[o] !== undefined);
+    let a = toDate(v1, f), b = toDate(v2, f);
+    return dateFilter(d, o, f, dt => !dt.isBefore(a) && !dt.isAfter(b));
 }
 function greaterDates(d, o, v, f) {
-    return d.filter(el => dayjs(el[o]).format(f) > dayjs(v).format(f) && el[o] !== undefined);
+    let a = toDate(v, f);
+    return dateFilter(d, o, f, dt => dt.isAfter(a));
 }
 function smallerDates(d, o, v, f) {
-    return d.filter(el => dayjs(el[o]).format(f) < dayjs(v).format(f) && el[o] !== undefined);
+    let a = toDate(v, f);
+    return dateFilter(d, o, f, dt => dt.isBefore(a));
 }
 function equalsDate(d, o, v, f) {
-    return d.filter(el => dayjs(el[o]).format(f) == dayjs(v).format(f) && el[o] !== undefined);
+    let a = toDate(v, f);
+    return dateFilter(d, o, f, dt => dt.isSame(a));
 }
 ```
 
@@ -1121,7 +1168,7 @@ function equalsDate(d, o, v, f) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.4 https://github.com/stadium-software/filter-grid */
 let filterClassName="."+~.Parameters.Input.FilterContainerClass;
 let filterContainer=document.querySelectorAll(filterClassName);
 if (filterContainer.length==0) {
@@ -1190,7 +1237,7 @@ function setHeader(c) {
 3. Drag a *JavaScript* action into the script
 4. Add the Javascript below into the JavaScript code property
 ```javascript
-/* Stadium Script 2.3.2 https://github.com/stadium-software/filter-grid */
+/* Stadium Script 2.4 https://github.com/stadium-software/filter-grid */
 let filterClassName = "." + ~.Parameters.Input.FilterContainerClass;
 let selectedFilters = ~.Parameters.Input.SelectedFilters || [];
 let filterContainer = document.querySelectorAll(filterClassName);
@@ -1510,6 +1557,7 @@ Applying filters to the full dataset and populating a DataGrid or Repeater with 
 5. Drag the "FiltersApply" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: The *List* containing the data (don't assign the *Label.text* directly)
+   3. CaseSensitive: Set this flag to *false* if you want to disable case sensitive text filtering. By default text filters are *case sensitive*. 
 6. The "FiltersApply" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
