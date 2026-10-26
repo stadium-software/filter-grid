@@ -1557,7 +1557,7 @@ Applying filters to the full dataset and populating a DataGrid or Repeater with 
 5. Drag the "FiltersApply" global script to the event handler and complete the input parameters
    1. FilterContainerClass: The classname assigned to the filter *Container* (e.g. filter-container)
    2. Data: The *List* containing the data (don't assign the *Label.text* directly)
-   3. CaseSensitive: Set this flag to *false* if you want to disable case sensitive text filtering. By default text filters are *case sensitive*. 
+   3. CaseSensitive: Set this flag to *false* if you want to **disable case sensitive text filtering**. By default text filters are **case sensitive**. 
 6. The "FiltersApply" global script outputs an objet with two properties
    1. data: A List containing the filtered dataset
    2. filters: The List of filters that were applied (this can be savedfor later)
